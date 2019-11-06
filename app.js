@@ -1,20 +1,31 @@
 var express = require('express');  
 var bodyParser = require('body-parser');  
 var mongodb = require('mongodb'),  
-    MongoClient = mongodb.MongoClient;
-var assert = require('assert');  
-var util=require('util');
-var song;
-var unirest = require("unirest");
-var reqd = unirest("GET", "https://deezerdevs-deezer.p.rapidapi.com/search");
-var app = express();  
- var result;
+    MongoClient = mongodb.MongoClient,
+	assert = require('assert'),
+    util=require('util'),
+	song,
+    unirest = require("unirest"),
+	reqd = unirest("GET", "https://deezerdevs-deezer.p.rapidapi.com/search"),
+	app = express(),  
+	result,
+    obj2 ;
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.json());  
 app.use(bodyParser.urlencoded({ extended: true }));
 
+var mongoose = require("mongoose");
+mongoose.connect("mongodb://localhost/playlist_app");
 
+var playlistSchema = new mongoose.Schema({
+   name:   String,
+   artist: String,
+   audio:  String,
+   id:     Number
+});
+
+var Playlist = mongoose.model("Playlist", playlistSchema);
 
 
 
@@ -38,12 +49,24 @@ app.get("/list",function(req,res){
 	    reqd.end(function (resd) {
 			 if (resd.error) throw new Error(resd.error);
 				result= resd.body;
+			    obj2= JSON.parse(JSON.stringify(result));
+			   //console.log(obj2);
 				console.log(result["data"][0]["artist"]["name"]);
 				// resd.render("list", {result: result});
 				res.render("list", {result: result});
         });
 
 	  
+});
+
+//console.log(obj2["data"]);
+app.get("/addplaylist/:id",function(req,res){
+	// var ans=req.body.song;
+	// console.log(ans);
+	var agreementId = req.params.id;
+	console.log(agreementId);
+	console.log("hello");
+	res.redirect("/list");
 });
 
 

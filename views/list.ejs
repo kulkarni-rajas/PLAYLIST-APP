@@ -1,16 +1,30 @@
+<% include partials/header %>
 <h1>Results Page!!!</h1>
 <p>
-	<%= result["data"][0]["artist"]["name"]%>
+	 RESULT FOR-
 </p>
-<ul>
-    <% result["data"].forEach(function(song) { %>
-      <li>
-          <strong>
-              <%= song["title"] %>
-          </strong> 
-             <%=song["artist"]["name"]%>
-      </li>
-    <% }) %>
-</ul>
 
-<a href="/">Search Again!</a>
+<div class="container-fluid">
+
+	<ul  class="list-group">
+		<% result["data"].forEach(function(song) { %>
+		  <li class="list-group-item">
+			  <strong>
+				  <%= song["title"] %> -
+			  </strong> 
+				 <%=song["artist"]["name"]%>
+			  <form  action="/" method="POST">
+			  <button type="button"  class="btn btn-primary"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+				  </form>
+			  <form >
+				  <button> <a href="/addplaylist/<%= song.id %>"></a>I made a new friend!</button>
+			</form>
+		  </li>
+		<% }) %>
+
+	</ul>
+
+</div>
+
+<button href="/">Search Again!</button>
+<% include partials/footer %>
