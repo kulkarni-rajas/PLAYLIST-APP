@@ -1,0 +1,16 @@
+<h1>Results Page!!!</h1>
+<p>
+	<%= result["data"][0]["artist"]["name"]%>
+</p>
+<ul>
+    <% result["data"].forEach(function(song) { %>
+      <li>
+          <strong>
+              <%= song["title"] %>
+          </strong> 
+             <%=song["artist"]["name"]%>
+      </li>
+    <% }) %>
+</ul>
+
+<a href="/">Search Again!</a>
