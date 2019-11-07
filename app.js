@@ -22,10 +22,17 @@ var playlistSchema = new mongoose.Schema({
    name:   String,
    artist: String,
    audio:  String,
-   id:     Number
 });
 
 var Playlist = mongoose.model("Playlist", playlistSchema);
+
+var songSchema = new mongoose.Schema({
+   name:   String,
+   artist: String,
+   audio:  String,
+});
+
+var Song = mongoose.model("Song", songSchema);
 
 
 
@@ -49,25 +56,43 @@ app.get("/list",function(req,res){
 	    reqd.end(function (resd) {
 			 if (resd.error) throw new Error(resd.error);
 				result= resd.body;
-			    obj2= JSON.parse(JSON.stringify(result));
-			   //console.log(obj2);
-				console.log(result["data"][0]["artist"]["name"]);
-				// resd.render("list", {result: result});
-				res.render("list", {result: result});
+			//	console.log(result["data"][0]["artist"]["name"]);
+			    result["data"].forEach(function(song){
+					Song.create({
+						   name: song["title"],
+						   artist: song["artist"]["name"],
+                           audio:  song["preview"],
+						}, function(err, asong){
+							if(err){
+								console.log(err);
+							} else {
+							//	console.log(asong);
+							}
+						});
+				})
+		
+				Song.find({}, function(err, songs){
+					if(err){
+						console.log("ERROR!");
+						console.log(err);
+					} else {
+					//	console.log(typeof songs)
+					//	console.log(songs);
+						res.render("list", {Song: songs});
+					}
+				});
+				
         });
 
 	  
 });
 
-//console.log(obj2["data"]);
-app.get("/addplaylist/:id",function(req,res){
-	// var ans=req.body.song;
-	// console.log(ans);
-	var agreementId = req.params.id;
-	console.log(agreementId);
-	console.log("hello");
-	res.redirect("/list");
-});
+	app.get("/addplaylist/:id",function(req,res){
+	
+		console.log("id addroute has veen hit");
+		console.log(req.params.id);
+		res.render("playlist");
+	});
 
 
 
