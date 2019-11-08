@@ -1,13 +1,12 @@
-var express = require('express');  
-var bodyParser = require('body-parser');  
-var mongodb = require('mongodb'),  
+var express     = require('express');  
+var bodyParser  = require('body-parser');  
+var mongodb     = require('mongodb'),  
     MongoClient = mongodb.MongoClient,
-    unirest = require("unirest"),
-	reqd = unirest("GET", "https://deezerdevs-deezer.p.rapidapi.com/search"),
+    unirest     = require("unirest"),
+	User        = require("./models/user"),
+	reqd        = unirest("GET", "https://deezerdevs-deezer.p.rapidapi.com/search"),
 	app = express(),  
-	result,song,
-	song,
-    obj2 ;
+	result,song,obj2 ;
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.json());  
@@ -54,12 +53,13 @@ app.get("/list",function(req,res){
 	    reqd.end(function (resd) {
 			 if (resd.error) throw new Error(resd.error);
 				result= resd.body;
-			console.log(result["data"][0]);
+			//console.log(result["data"][0]);
 			    result["data"].forEach(function(song){
+					
 					Song.create({
-						   name: song["title"],
+						   name:   song["title"],
 						   artist: song["artist"]["name"],
-					audio:  song["preview"],
+					       audio:  song["preview"],
 						}, function(err, asong){
 							if(err){
 								console.log(err);
