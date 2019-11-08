@@ -4,12 +4,13 @@
 	 RESULT FOR-
 </p>
 <!-- <button href="/">Search Again!</button> -->
-<form action="/" method="GET">
-	<button  type="button" class="btn btn-primary btn-block">Search Again!</button>
-</form>
+
 
 
 <div class="container-fluid">
+	<form action="/back" method="POST">
+	<button >Search Again!</button>
+    </form>
 
 	<ul  class="list-group">
 		<% Song.forEach(function(song) { %>
@@ -28,6 +29,10 @@
 	</ul>
 
 </div>
+
+<div class="float-right">
+	<iframe src="https://webdevbootcamp-hnsme.run.goorm.io/playlist"></iframe>
+</div><br>
 
 
 <% include partials/footer %>
