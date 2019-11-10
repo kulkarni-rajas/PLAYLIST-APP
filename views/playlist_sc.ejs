@@ -9,19 +9,24 @@
 
 <div class="container-fluid">
 	<form action="/back" method="POST">
-	<button >Search Again!</button>
+	<button >PLAYLISTS</button>
     </form>
-
+	<p>
+		<%=idp%>
+	</p>
+    <form action="/newplaylist/<%=idp%>" method="GET">
+		<input type="text" placeholder="name" name="plyname">
+		<input type="submit">
+	</form>
 	<ul  class="list-group">
-		<% Song.forEach(function(song) { %>
+		<% playlists.forEach(function(song) { %>
 		  <li class="list-group-item">
 			  <strong>
 				  <%= song["name"] %> -
-			  </strong> 
-				 <%=song["artist"]%>
-			  <form action="/addplaylist/<%= song._id %>" method="GET">
-				  <button>ADD to playlist</button>
-			</form>
+			  </strong>
+			  <form action="/showplay/<%=idp%>/<%=song._id%>" method="GET">
+				<input type="submit">
+			  </form>
 		  </li>
 		<% }) %>
 
@@ -29,9 +34,7 @@
 
 </div>
 
-<div class="float-right">
-	<iframe src="https://webdevbootcamp-hnsme.run.goorm.io/playlist"></iframe>
-</div><br>
+
 
 
 <% include partials/footer %>

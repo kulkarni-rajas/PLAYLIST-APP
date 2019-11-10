@@ -3,7 +3,6 @@ var bodyParser  = require('body-parser');
 var mongodb     = require('mongodb'),  
     MongoClient = mongodb.MongoClient,
     unirest     = require("unirest"),
-	User        = require("./models/user"),
 	reqd        = unirest("GET", "https://deezerdevs-deezer.p.rapidapi.com/search"),
 	app = express(),  
 	result,song,obj2 ;
@@ -11,7 +10,6 @@ var mongodb     = require('mongodb'),
 app.set('view engine', 'ejs');
 app.use(bodyParser.json());  
 app.use(bodyParser.urlencoded({ extended: true }));
-
 var mongoose = require("mongoose");
 mongoose.connect("mongodb://localhost/playlist_app");
 
@@ -22,6 +20,13 @@ var playlistSchema = new mongoose.Schema({
 });
 
 var Playlist = mongoose.model("Playlist", playlistSchema);
+
+var playlistSCSchema = new mongoose.Schema({
+   name:   String,
+   playlist: [playlistSchema]
+});
+
+var PlaylistSC = mongoose.model("PlaylistSC", playlistSCSchema);
 
 var songSchema = new mongoose.Schema({
    name:   String,
@@ -86,32 +91,75 @@ app.get("/list",function(req,res){
 });
 
 	app.get("/addplaylist/:id",function(req,res){
-
-		console.log(req.params.id,);
-		
-		Song.findById(req.params.id,function(err,foundSong){
-			if(err){
-				console.log(err);
-			}
-			else{
-			
-					Playlist.create({
-						   name: foundSong["name"],
-						   artist: foundSong["artist"],
-					audio:  foundSong["audio"],
-						}, function(err, asong){
-							if(err){
-								console.log(err);
-							} else {
-								console.log(asong);
-							}
-						});
-			}
-			
-		});
-		
-		
+		var idp=req.params.id;
+	     PlaylistSC.find({}, function(err, songs){
+					if(err){
+						console.log("ERROR!");
+						console.log(err);
+					} else {
+					//	console.log(typeof songs)
+					//	console.log(songs);
+						res.render("playlist_sc",{playlists: songs,idp:idp});
+					}
+				});
 	});
+
+app.get("/newplaylist/:id",function(req,res){
+	var idp= req.params.id;
+	var name= req.query.plyname;
+	console.log(name);
+//	res.redirect("");
+	PlaylistSC.create({
+	   name:   name,
+	}, function(err, asong){
+		if(err){
+			console.log(err);
+		} else {
+			console.log(asong);
+		}
+	});
+				
+	PlaylistSC.find({}, function(err, songs){
+					if(err){
+						console.log("ERROR!");
+						console.log(err);
+					} else {
+					//	console.log(typeof songs)
+						console.log(songs);
+						res.render("playlist_sc",{playlists: songs,idp:idp});
+					}
+				});
+	
+});
+
+	
+// app.get("/showply/:ida/:idb",function(req,res){
+
+// 		console.log(req.params.id,);
+		
+// 		Song.findById(req.params.id,function(err,foundSong){
+// 			if(err){
+// 				console.log(err);
+// 			}
+// 			else{
+			
+// 					Playlist.create({
+// 						   name: foundSong["name"],
+// 						   artist: foundSong["artist"],
+// 					audio:  foundSong["audio"],
+// 						}, function(err, asong){
+// 							if(err){
+// 								console.log(err);
+// 							} else {
+// 								console.log(asong);
+// 							}
+// 						});
+// 			}
+			
+// 		});
+		
+		
+// 	});
 app.get("/playlist",function(req,res){
 		Playlist.find({}, function(err, songs){
 		if(err){
@@ -143,5 +191,5 @@ app.post("/delete/:id",function(req,res){
 
 
 app.listen(3000,function(){
-	console.log("doof says yes")
+	console.log("doof says yes");
 });
