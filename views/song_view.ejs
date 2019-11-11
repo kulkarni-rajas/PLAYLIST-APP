@@ -1,0 +1,27 @@
+<% include partials/header %>
+
+
+<div class="container-fluid">
+	<form action="/back" method="POST">
+	<button ><%=Song.name%></button>
+    </form>
+	
+	<ul  class="list-group">
+		<% Song.playlist.forEach(function(song) { %>
+		  <li class="list-group-item">
+			  <strong>
+				  <%= song["name"] %> -
+			  </strong>
+			        <%= song["artist"] %> -
+			  <form action="/playlist/<%=song._id %></for>>" method="GET">
+				<input type="submit">
+			  </form>
+		  </li>
+		<% }) %>
+
+	</ul>
+
+</div>
+
+
+<% include partials/footer %>
