@@ -5,15 +5,13 @@
 </p>
 <!-- <button href="/">Search Again!</button> -->
 
-
+	<form action="/back" method="POST">
+	<button >Search Again!</button>
+	</form>
 
 <div class="container-fluid">
-	<form action="/back" method="POST">
-	<button >PLAYLISTS</button>
-    </form>
-	<p>
-		<%=idp%>
-	</p>
+	
+	
     <form action="/newplaylist/<%=idp%>" method="GET">
 		<input type="text" placeholder="name" name="plyname">
 		<input type="submit">
@@ -25,7 +23,7 @@
 				  <%= song["name"] %> -
 			  </strong>
 			  <form action="/showplay/<%=idp%>/<%=song._id%>" method="GET">
-				<input type="submit">
+				<input type="submit" value="ADD">
 			  </form>
 		  </li>
 		<% }) %>

@@ -1,10 +1,16 @@
 <% include partials/header %>
 
+	<form action="/back" method="POST">
+	<button >Search Again!</button>
+	</form>
 
 <div class="container-fluid">
-	<form action="/back" method="POST">
-	<button ><%=Song.name%></button>
-    </form>
+	<h2><%=Song.name%></h2>
+	
+
+	<audio src=<%= play%> controls autoplay>
+     Your browser does not support the audio element.
+    </audio>
 	
 	<ul  class="list-group">
 		<% Song.playlist.forEach(function(song) { %>
@@ -13,8 +19,9 @@
 				  <%= song["name"] %> -
 			  </strong>
 			        <%= song["artist"] %> -
-			  <form action="/playlist/<%=song._id %></for>>" method="GET">
-				<input type="submit">
+			  
+			  <form action="/playsong/<%=Song._id %>/<%=song._id %>" method="get">
+				<input type="submit" value="play">
 			  </form>
 		  </li>
 		<% }) %>

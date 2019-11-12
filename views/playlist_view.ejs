@@ -1,10 +1,11 @@
 <% include partials/header %>
 
+	<form action="/back" method="POST">
+	<button >Search Again!</button>
+	</form>
 
 <div class="container-fluid">
-	<form action="/back" method="POST">
-	<button >PLAYLISTS</button>
-    </form>
+
 	
 	<ul  class="list-group">
 		<% Song.forEach(function(song) { %>
@@ -13,7 +14,7 @@
 				  <%= song["name"] %> -
 			  </strong>
 			  <form action="/playlist/<%=song._id %>" method="GET">
-				<input type="submit">
+				<input type="submit" value="ADD">
 			  </form>
 		  </li>
 		<% }) %>

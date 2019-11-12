@@ -1,11 +1,14 @@
 <% include partials/header %>
+	<form action="/back" method="POST">
+					<button >Search Again!</button>
+					</form>
 <div class="container-fluid">
 	<audio controls>
   <source src="https://cdns-preview-e.dzcdn.net/stream/c-efe84e57a61d55f279c9f0c988eb4534-4.mp3.ogg" type="audio/ogg">
   <source src="https://cdns-preview-e.dzcdn.net/stream/c-efe84e57a61d55f279c9f0c988eb4534-4.mp3.mp3" type="audio/mpeg">
   Your browser does not support the audio tag.
 </audio>
-
+    
 	<ul  class="list-group">
 		<% Song.forEach(function(song) { %>
 		  <li class="list-group-item">
@@ -14,9 +17,9 @@
 			  </strong> 
 				 <%=song["artist"]%>
 		  </li>
-		<form action="/delete/<%= song._id%>" method="POST">
+		<!-- <form action="/delete/<%= song._id%>" method="POST">
 			<button >DELETE</button>
-		</form>
+		</form> -->
 		<% }) %>
 
 	</ul>

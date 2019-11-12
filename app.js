@@ -1,14 +1,14 @@
-var express     = require('express');  
-var bodyParser  = require('body-parser');  
-var mongodb     = require('mongodb'),  
+var express     = require('express'),  
+    bodyParser  = require('body-parser'),  
+    mongodb     = require('mongodb'),  
     MongoClient = mongodb.MongoClient,
     passport    = require("passport"),
     LocalStrategy = require("passport-local"),
 	passportLocalMongoose = require("passport-local-mongoose"),
     unirest     = require("unirest"),
 	reqd        = unirest("GET", "https://deezerdevs-deezer.p.rapidapi.com/search"),
-	app = express(),  
-	result,song,obj2 ;
+	app         = express(),  
+	result,song,obj2,empty=null; ;
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.json());  
@@ -65,10 +65,6 @@ var songSchema = new mongoose.Schema({
 
 var Song = mongoose.model("Song", songSchema);
 
-app.use(function(req, res, next){
-   res.locals.currentUser = req.user;
-   next();
-});
 
 app.get("/", function(req, res){
         res.render("landing");
@@ -219,13 +215,42 @@ app.get("/playlist/:id",function(req,res){
 			console.log("ERROR!");
 			console.log(err);
 		} else {
-		//	console.log(typeof songs)
-			res.render("song_view",{Song: songs});
+			console.log(songs.playlist[0])
+			if(songs.playlist[0]){
+				console.log("yes");
+			res.render("song_view",{Song: songs,play:songs.playlist[0]["audio"]});
+			}
+			else{
+				console.log("no");
+				res.render("song_view",{Song: songs,play:null });
+			}
 		}
 	});
 	
 });
+app.get("/playsong/:ida/:idb",function(req,res){
+	//console.log(req.params.idx)
+	var ida= req.params.ida;
+	var idb= req.params.idb;
+		PlaylistSC.findById(req.params.ida,function(err,foundPly){
+		if(err){
+			console.log(err);
+		}
+		else{
+		      console.log(foundPly);
+					foundPly.playlist.forEach(function(foundSong){
+					if(foundSong._id==idb){
+					  console.log(foundSong);
+					  return res.render("song_view",{Song: foundPly,play:foundSong["audio"]});
+					}
 
+			 });
+		}
+	});
+});
+
+
+	
 // app.get("/playlistCV",function(req,res){
 		
 // 	Playlist.find({}, function(err, songs){
@@ -256,32 +281,35 @@ app.post("/delete/:id",function(req,res){
 });
 
 
-// show register form
+
 app.get("/register", function(req, res){
    res.render("signup"); 
 });
 //handle sign up logic
 app.post("/register", function(req, res){
+	
     var newUser = new User({username: req.body.username});
     User.register(newUser, req.body.password, function(err, user){
         if(err){
             console.log(err);
-            return res.render("signup");
+            //return res.render("signup");
+			res.send("username already taken");
         }
-        passport.authenticate("local")(req, res, function(){
-           res.redirect("/"); 
+         passport.authenticate("local")(req, res, function(){
+			 res.send("successfully registered");
+        //    res.redirect("/"); 
         });
     });
 });
 
 // show login form
-app.get("/login", function(req, res){
+app.get("/login",registerLOG, function(req, res){
    res.render("login"); 
 });
 // handling login logic
 app.post("/login", passport.authenticate("local", 
     {
-        successRedirect: "/",
+        successRedirect: "/list",
         failureRedirect: "/login"
     }), function(req, res){
 });
@@ -299,6 +327,16 @@ function isLoggedIn(req, res, next){
     res.redirect("/login");
 }
 
+function registerLOG(req,res,next){
+	if(req.isAuthenticated()){
+		res.redirect("/")
+		console.log("yes");
+    }
+	else{
+		console.log("no");
+		return next();	
+		}
+}
 
 app.listen(3000,function(){
 	console.log("doof says yes");
