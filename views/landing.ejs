@@ -1,13 +1,13 @@
 <% include partials/header %>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
-	<link rel="stylesheet" href="stylesheets/landing.css">
-<div class="container">  
-	 <form action="/list" method="GET">
-		<input type="text" placeholder="search term" name="search">
+<div class="cover">  
+	 <form class="flex-form" action="/list" method="GET">
+		<label for="from">
+			<i class="ion-location"></i>
+		  </label>
+		<input type="text" placeholder="Song" name="Search">
 		<input type="submit">
 	</form>
  </div>
  
- <script src="scripts/background.js"></script>
-
+ 
 <% include partials/footer %>
