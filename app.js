@@ -341,3 +341,5 @@ function registerLOG(req,res,next){
 app.listen(3000,function(){
 	console.log("doof says yes");
 });
+
+app.use(express.static(__dirname + '/public'));
