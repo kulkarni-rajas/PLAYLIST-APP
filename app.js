@@ -11,6 +11,7 @@ var express     = require('express'),
 	result,song,obj2,empty=null; ;
 
 app.set('view engine', 'ejs');
+app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());  
 app.use(bodyParser.urlencoded({ extended: true }));
 var mongoose = require("mongoose");
@@ -72,8 +73,8 @@ app.get("/", function(req, res){
 });
 
 app.get("/list",function(req,res){
-	song=req.query.search;
-	 //console.log(song);
+	song=req.query.Search;
+	 console.log(song);
 			reqd.query({
 			"q": "" + song+ ""
 		});
@@ -342,4 +343,3 @@ app.listen(3000,function(){
 	console.log("doof says yes");
 });
 
-app.use(express.static(__dirname + '/public'));
