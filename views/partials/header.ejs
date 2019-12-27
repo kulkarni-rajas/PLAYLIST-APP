@@ -1,35 +1,42 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>PLAYPAL</title>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-        <link href="/css/style.css" rel="stylesheet" type="text/css">
-        <script src="https://code.jquery.com/jquery-git2.min.js"></script>
-    </head>
-    <body>
-     <nav class="navbar navbar-default">
-        <div class="container">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="/">PlayPal</a>
-            </div>
-			
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-                <ul class="nav navbar-nav navbar-right">
-					
-                    <% if(!currentUser){ %>
-                        <li><a href="/login">Login</a></li>
-                        <li><a href="/register">Sign Up</a></li>
-                    <% } else { %>
-                        <li><a href="#">Signed In As <%= currentUser.username %></a></li>
-                        <li><a href="/logout">Logout</a></li>
-                    <% } %>
-                </ul>
-			<form  action="/playlist" method="GET">
-			  <a class="btn btn-primary" href="/playlist" role="button" >PLAYLIST</a>
-			</form>
-            
-           
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link href="css/header.css" rel="stylesheet" type="text/css">
+    <title>PlayPal</title>
+  </head>
+  <body>
+      
+        <div class="container-fluid">
+            <nav class="navbar navbar-expand-lg navbar navbar-dark bg-dark">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+                </button>
+                <a class="navbar-brand" href="/">PlayPal</a>
+              
+                <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+
+                    <form  action="/playlist" method="GET">
+                        <a class="btn btn-outline-success my-2 my-sm-0" href="/playlist" role="button" >Your Playlist</a>
+                    </form>
+                    <ul class="navbar-nav ml-auto">
+                        <% if(!currentUser){ %>
+                            <a role="button" style='margin-right:16px' class="btn btn-outline-success my-2 my-sm-0" href="/login">Login</a>
+                            
+                            <a role="button" style='margin-right:16px' class="btn btn-outline-success my-2 my-sm-0" href="/register">Sign Up</a>
+                        <% } else { %>
+                            <a role="button" style='margin-right:16px' class="btn btn-outline-success my-2 my-sm-0" href="#">Signed In As <%= currentUser.username %></button></li>
+                                
+                            <a role="button" style='margin-right:16px' class="btn btn-outline-success my-2 my-sm-0" href="/logout">Logout</a>
+                        <% } %>
+                    </ul>
+    
+
+                </div>
+              </nav>
         </div>
-    </nav> 
-		<div class="container">
-		
