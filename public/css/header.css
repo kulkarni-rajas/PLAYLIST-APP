@@ -7,3 +7,9 @@ body {
 .navbar  a {
     font-size: 20px;
 }
+.container-fluid {
+  padding-left: 50px;
+  padding-right: 50px;
+  padding-top: 30px;
+  padding-bottom : 50px;
+}

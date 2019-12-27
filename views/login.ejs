@@ -1,15 +1,24 @@
 <% include ./partials/header %> 
+<link href="css/login.css" rel="stylesheet" type="text/css">
 
+<div class="container">
 <h1>Login!</h1>
-<form action="/login" method="POST">
-    <input type="text" name="username" placeholder="username">
-    <input type="password" name="password" placeholder="password">
-    <input type="submit" value="Login!">
-</form>
-<p>
-	dont have an account?
-	<a href="/register">SIGNUP</a>
-</p>
+<div class="login-page">
+    <div class="form">
+      <form action="/login" method="POST">
+        <input type="text" name="username" placeholder="username">
+        <input type="password" name="password" placeholder="password">
+        <input class="btn btn-outline-success my-2 my-sm-0" role="button" type="submit" value="Login!">
+      </form>
+      <p>
 
+      </p>
+      <p>
+        Dont have an Account?
+        <a class="btn btn-outline-success my-2 my-sm-0" role="button" href="/register">SIGNUP</a>
+    </p>
+    </div>
+  </div>
+</div>
 
 <% include ./partials/footer %> 

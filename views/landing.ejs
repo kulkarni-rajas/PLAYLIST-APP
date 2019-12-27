@@ -1,13 +1,16 @@
 <% include partials/header %>
-<div class="cover">  
-	 <form class="flex-form" action="/list" method="GET">
-		<label for="from">
-			<i class="ion-location"></i>
-		  </label>
-		<input type="text" placeholder="Song" name="Search">
-		<input type="submit">
-	</form>
- </div>
- 
+<link href="css/login.css" rel="stylesheet" type="text/css">
+<div class="container">
+	<div class="row">
+		<div class="col-md-3"></div>
+		<div class="form">  
+			<form action="/list" method="GET">
+				<input type="text" placeholder="Song" name="Search">
+				<input class="btn btn-outline-success my-2 my-sm-0" role="button" type="submit">
+			</form>
+		</div>
+	</div>
+	
+</div>
  
 <% include partials/footer %>
