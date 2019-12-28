@@ -8,12 +8,14 @@ var express     = require('express'),
     unirest     = require("unirest"),
 	reqd        = unirest("GET", "https://deezerdevs-deezer.p.rapidapi.com/search"),
 	app         = express(),  
-	result,song,obj2,empty=null; ;
+	flash       = require('connect-flash'),
+	result,song,obj2,empty=null; 
 
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());  
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(flash());
 var mongoose = require("mongoose");
 mongoose.connect("mongodb://localhost/playlist_app");
 
@@ -215,15 +217,17 @@ app.get("/playlist/:id",function(req,res){
 		if(err){
 			console.log("ERROR!");
 			console.log(err);
-		} else {
-			console.log(songs.playlist[0])
+		} 
+		else {
+			//console.log(songs.playlist[0])
 			if(songs.playlist[0]){
-				console.log("yes");
-			res.render("song_view",{Song: songs,play:songs.playlist[0]["audio"]});
+			res.render("song_view",{Song: songs, play:songs.playlist[0]["audio"]});
+			//	res.render("playlist_view",{Song: songs});
 			}
 			else{
 				console.log("no");
-				res.render("song_view",{Song: songs,play:null });
+				res.render("playlist_view",{Song: songs});
+				//res.render("song_view",{Song: songs,play:null });
 			}
 		}
 	});
@@ -298,7 +302,7 @@ app.post("/register", function(req, res){
         }
          passport.authenticate("local")(req, res, function(){
 			 res.send("successfully registered");
-        //    res.redirect("/"); 
+//res.redirect("/"); 
         });
     });
 });
@@ -311,7 +315,8 @@ app.get("/login",registerLOG, function(req, res){
 app.post("/login", passport.authenticate("local", 
     {
         successRedirect: "/list",
-        failureRedirect: "/login"
+        failureRedirect: "/login",
+	    failureFlash: 'Invalid username or password.'
     }), function(req, res){
 });
 
