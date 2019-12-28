@@ -15,6 +15,7 @@
 	<ul  class="list-group">
 		<% Song.playlist.forEach(function(song) { %>
 		  <li class="list-group-item">
+			   <img src=<%=song["image"] %>>
 			  <strong>
 				  <%= song["name"] %> -
 			  </strong>
