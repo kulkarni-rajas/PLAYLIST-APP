@@ -217,17 +217,15 @@ app.get("/playlist/:id",function(req,res){
 		if(err){
 			console.log("ERROR!");
 			console.log(err);
-		} 
-		else {
-			//console.log(songs.playlist[0])
+		} else {
+			console.log(songs.playlist[0])
 			if(songs.playlist[0]){
-			res.render("song_view",{Song: songs, play:songs.playlist[0]["audio"]});
-			//	res.render("playlist_view",{Song: songs});
+				console.log("yes");
+			res.render("song_view",{Song: songs,play:songs.playlist[0]["audio"]});
 			}
 			else{
 				console.log("no");
-				res.render("playlist_view",{Song: songs});
-				//res.render("song_view",{Song: songs,play:null });
+				res.render("song_view",{Song: songs,play:null });
 			}
 		}
 	});
