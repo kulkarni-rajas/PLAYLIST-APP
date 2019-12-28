@@ -49,6 +49,7 @@ var playlistSchema = new mongoose.Schema({
    name:   String,
    artist: String,
    audio:  String,
+   image:  String,	
 });
 
 var Playlist = mongoose.model("Playlist", playlistSchema);
@@ -64,6 +65,7 @@ var songSchema = new mongoose.Schema({
    name:   String,
    artist: String,
    audio:  String,
+   image:  String,	
 });
 
 var Song = mongoose.model("Song", songSchema);
@@ -96,6 +98,7 @@ app.get("/list",function(req,res){
 						   name:   song["title"],
 						   artist: song["artist"]["name"],
 					       audio:  song["preview"],
+						   image:  song["album"]["cover_small"]
 						}, function(err, asong){
 							if(err){
 								console.log(err);
@@ -184,6 +187,7 @@ app.get("/showplay/:ida/:idb",function(req,res){
 							 name:   foundSong["name"],
 							 artist: foundSong["artist"],
 							 audio:  foundSong["audio"],
+							 image:  foundSong["image"] 
 
 						});
 						  currply.save();
