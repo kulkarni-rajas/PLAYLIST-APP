@@ -8,12 +8,14 @@ var express     = require('express'),
     unirest     = require("unirest"),
 	reqd        = unirest("GET", "https://deezerdevs-deezer.p.rapidapi.com/search"),
 	app         = express(),  
-	result,song,obj2,empty=null; ;
+	flash       = require('connect-flash'),
+	result,song,obj2,empty=null; 
 
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());  
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(flash());
 var mongoose = require("mongoose");
 mongoose.connect("mongodb://localhost/playlist_app");
 
@@ -47,6 +49,7 @@ var playlistSchema = new mongoose.Schema({
    name:   String,
    artist: String,
    audio:  String,
+   image:  String,	
 });
 
 var Playlist = mongoose.model("Playlist", playlistSchema);
@@ -62,6 +65,7 @@ var songSchema = new mongoose.Schema({
    name:   String,
    artist: String,
    audio:  String,
+   image:  String,	
 });
 
 var Song = mongoose.model("Song", songSchema);
@@ -94,6 +98,7 @@ app.get("/list",function(req,res){
 						   name:   song["title"],
 						   artist: song["artist"]["name"],
 					       audio:  song["preview"],
+						   image:  song["album"]["cover_small"]
 						}, function(err, asong){
 							if(err){
 								console.log(err);
@@ -182,6 +187,7 @@ app.get("/showplay/:ida/:idb",function(req,res){
 							 name:   foundSong["name"],
 							 artist: foundSong["artist"],
 							 audio:  foundSong["audio"],
+							 image:  foundSong["image"] 
 
 						});
 						  currply.save();
@@ -298,7 +304,7 @@ app.post("/register", function(req, res){
         }
          passport.authenticate("local")(req, res, function(){
 			 res.send("successfully registered");
-        //    res.redirect("/"); 
+//res.redirect("/"); 
         });
     });
 });
@@ -311,7 +317,8 @@ app.get("/login",registerLOG, function(req, res){
 app.post("/login", passport.authenticate("local", 
     {
         successRedirect: "/list",
-        failureRedirect: "/login"
+        failureRedirect: "/login",
+	    failureFlash: 'Invalid username or password.'
     }), function(req, res){
 });
 
