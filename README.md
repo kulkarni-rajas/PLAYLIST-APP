@@ -14,10 +14,10 @@ app for finding songs later to be added to a playlist where they will be playabl
 * Clone the Repository
 > git clone https://github.com/harshith331/PLAYLIST-APP.git
 
-* Chnage directory
+* Change directory
 > cd PLALIST-APP
 
-* Start MongoDB
+* Start MongoDB server in a parallel terminal
 > sudo service mongod start
 * Check Status
 > sudo service mongod status
