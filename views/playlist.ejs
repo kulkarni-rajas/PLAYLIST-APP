@@ -1,37 +1,30 @@
 <% include partials/header %>
-<link href="css/login.css" rel="stylesheet" type="text/css">
-<div class="container">
-	<div class="alert alert-light" role="alert">
-		<form action="/back" method="POST">
-			<button class="btn btn-outline-success my-2 my-sm-0">Search Again!</button>
-		</form>
-	</div>
-</div>
-
-<div class="container">
-	<div class="row">
-		<audio controls>
-			<source src="https://cdns-preview-e.dzcdn.net/stream/c-efe84e57a61d55f279c9f0c988eb4534-4.mp3.ogg" type="audio/ogg">
-			<source src="https://cdns-preview-e.dzcdn.net/stream/c-efe84e57a61d55f279c9f0c988eb4534-4.mp3.mp3" type="audio/mpeg">
-			Your browser does not support the audio tag.
-		</audio>
-
+	<form action="/back" method="POST">
+					<button >Search Again!</button>
+					</form>
+<div class="container-fluid">
+	<audio controls>
+  <source src="https://cdns-preview-e.dzcdn.net/stream/c-efe84e57a61d55f279c9f0c988eb4534-4.mp3.ogg" type="audio/ogg">
+  <source src="https://cdns-preview-e.dzcdn.net/stream/c-efe84e57a61d55f279c9f0c988eb4534-4.mp3.mp3" type="audio/mpeg">
+  Your browser does not support the audio tag.
+</audio>
+    
+	<ul  class="list-group">
 		<% Song.forEach(function(song) { %>
-			<div class="col">
-				<div class="card" style="width: 18rem;">
-					<div class="card-body">
-						<h5 class="card-title"><%= song["name"] %></h5>
-						<h6 class="card-subtitle"><%=song["artist"]%></h6>
-					</div>
-				</div>
-			</div>
+		  <li class="list-group-item">
+			  <strong>
+				  <%= song["name"] %> -
+			  </strong> 
+				 <%=song["artist"]%>
+		  </li>
+		<!-- <form action="/delete/<%= song._id%>" method="POST">
+			<button >DELETE</button>
+		</form> -->
 		<% }) %>
 
-		<form action="/list" method="GET">
-			<button class="btn btn-outline-success my-2 my-sm-0" role="button">list</button>
-		</form>
-
-	</div>
+	</ul>
+<form action="/list" method="GET">
+	<button  >list</button>
+</form>
 </div>
-
 <% include partials/footer %>
