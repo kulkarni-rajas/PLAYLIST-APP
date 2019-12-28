@@ -297,7 +297,7 @@ app.post("/register", function(req, res){
 			res.send("username already taken");
         }
          passport.authenticate("local")(req, res, function(){
-			 res.send("successfully registered");
+			res.render("register");
         //    res.redirect("/"); 
         });
     });
