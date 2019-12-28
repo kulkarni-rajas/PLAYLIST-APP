@@ -1,27 +1,31 @@
 <% include partials/header %>
+<link href="css/login.css" rel="stylesheet" type="text/css">
 
-	<form action="/back" method="POST">
-	<button >Search Again!</button>
-	</form>
-
-<div class="container-fluid">
-
-	
-	<ul  class="list-group">
-		<% Song.forEach(function(song) { %>
-		  <li class="list-group-item">
-			  <strong>
-				  <%= song["name"] %> -
-			  </strong>
-			  <form action="/playlist/<%=song._id %>" method="GET">
-				<input type="submit" value="ADD">
-			  </form>
-		  </li>
-		<% }) %>
-
-	</ul>
-
+<div class="container">
+	<div class="alert alert-success">
+		<form action="/back" method="POST">
+			<button class="btn btn-outline-success my-2 my-sm-0" role="button" >Search Again!</button>	
+		</form>
+	</div>
 </div>
 
+<div class="container">
+    <div class="row row-cols-1 row-cols-md-3">
+		<% Song.forEach(function(song) { %>
+            <div class="col mb-4">
+                <div class="card-transparent h-100">
+                    <!-- <img src=<%=song["image"] %> class="card-img-top" alt="..."> -->
+                    <div class="card-body">
+						<h4 class="card-title"><strong><%= song["name"] %></strong></h4>
+						<!-- <p class="card-text><%=song["artist"]%></p> -->
+						<form action="/playlist/<%=song._id %>" method="GET">
+							<input class="btn btn-outline-success my-2 my-sm-0" role="button" type="submit" value="List">
+						</form>
+                    </div>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+</div>
 
 <% include partials/footer %>
