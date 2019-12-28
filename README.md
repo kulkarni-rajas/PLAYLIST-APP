@@ -3,19 +3,11 @@
 <br>
 [![Join the chat at https://gitter.im/NIT-dgp/General](https://badges.gitter.im/NIT-dgp/General.svg)](https://gitter.im/NIT-dgp/General?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-[![GSoC Heat](https://img.shields.io/badge/GSoC%20Heat-2019-orange.svg)](https://nitdgpos.github.io/gsoc_heat)
+[![GSoC Heat 2020](https://img.shields.io/badge/GSoC%20Heat-2019-orange.svg)](https://nitdgpos.github.io/gsoc_heat)
 <br>
-![forthebadge](https://forthebadge.com/images/badges/made-with-python.svg)
-<br>
-![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)
-<br>
-
 [![forthebadge](https://forthebadge.com/images/badges/uses-html.svg)](https://forthebadge.com)
-
 [![forthebadge](https://forthebadge.com/images/badges/uses-css.svg)](https://forthebadge.com)
-
 [![forthebadge](https://forthebadge.com/images/badges/uses-js.svg)](https://forthebadge.com)
-
 [![forthebadge](https://forthebadge.com/images/badges/uses-git.svg)](https://forthebadge.com)
 
 
@@ -51,4 +43,5 @@ sudo service mongod status
 #Launch App by
 node app.js
 
-#App hosted at http://localhost:3000/
+#App hosted at 
+http://localhost:3000/
