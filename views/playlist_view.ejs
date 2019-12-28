@@ -1,27 +1,29 @@
 <% include partials/header %>
 
-	<form action="/back" method="POST">
-	<button >Search Again!</button>
-	</form>
-
-<div class="container-fluid">
-
-	
-	<ul  class="list-group">
-		<% Song.forEach(function(song) { %>
-		  <li class="list-group-item">
-			  <strong>
-				  <%= song["name"] %> -
-			  </strong>
-			  <form action="/playlist/<%=song._id %>" method="GET">
-				<input type="submit" value="ADD">
-			  </form>
-		  </li>
-		<% }) %>
-
-	</ul>
-
+<link href="css/login.css" rel="stylesheet" type="text/css">
+<div class="container">
+	<div class="alert alert-light" role="alert">
+		<form action="/back" method="POST">
+		<button class="btn btn-outline-success my-2 my-sm-0">Search Again!</button>
+		</form>
+	</div>
 </div>
 
+<div class="container">
+	<div class="row">
+		<% Song.forEach(function(song) { %>
+			<div class="col">
+				<div class="card" style="width: 18rem;">
+					<div class="card-body">
+						<h5 class="card-title"><%= song["name"] %></h5>
+						<form action="/playlist/<%=song._id %>" method="GET">
+							<input type="submit" class="btn btn-outline-success my-2 my-sm-0" role="button" value="ADD">
+						  </form>
+					</div>
+				</div>
+			</div>
+		<% }) %>
+	</div>
+</div>
 
 <% include partials/footer %>

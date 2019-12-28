@@ -1,37 +1,61 @@
 <% include partials/header %>
-<h1>Results Page!!!</h1>
-<p>
-	 RESULT FOR-
-</p>
-<!-- <button href="/">Search Again!</button> -->
+<link href="css/login.css" rel="stylesheet" type="text/css">
+<script type='text/javascript'>
 
+	(function()
+	{
+	  if( window.localStorage )
+	  {
+		if( !localStorage.getItem('firstLoad') )
+		{
+		  localStorage['firstLoad'] = true;
+		  window.location.reload();
+		}  
+		else
+		  localStorage.removeItem('firstLoad');
+	  }
+	})();
+	
+	</script>
+<link href="css/login.css" rel="stylesheet" type="text/css">
 
-
-<div class="container-fluid">
-	<form action="/back" method="POST">
-	<button >Search Again!</button>
-    </form>
-
-	<ul  class="list-group">
-		<% Song.forEach(function(song) { %>
-		  <li class="list-group-item">
-			  <strong>
-				  <%= song["name"] %> -
-			  </strong> 
-				 <%=song["artist"]%>
-			  <form action="/addplaylist/<%= song._id %>" method="GET">
-				  <button>ADD to playlist</button>
+<div class="container">
+	<div class="alert alert-light" role="alert">
+		<h1>Results Page!!!</h1>
+		<p>
+			Search Results
+		</p>
+		<div class="alert alert-light" role="alert">
+			<form action="/back" method="POST">
+				<button class="btn btn-outline-success my-2 my-sm-0">Search Again!</button>
 			</form>
-		  </li>
-		<% }) %>
+		</div>
+	
+	</div>
+</div>
 
-	</ul>
 
+
+<div class="container">
+	<div class="row">
+	<% Song.forEach(function(song) { %>
+		<div class="col">
+			<div class="card" style="width: 18rem;">
+				<div class="card-body">
+					<h5 class="card-title"><%= song["name"] %></h5>
+					<h6 class="card-subtitle mb-2 text-muted"><%=song["artist"]%></h6>
+					<form action="/addplaylist/<%= song._id %>" method="GET">
+						<button class="btn btn-outline-success my-2 my-sm-0">Add To Playlist</button>
+					</form>
+				</div>
+			</div>
+      </div>
+	  <% }) %>
+	</div>
 </div>
 
 <div class="float-right">
 	<iframe src="https://webdevbootcamp-hnsme.run.goorm.io/playlist"></iframe>
 </div><br>
-
 
 <% include partials/footer %>

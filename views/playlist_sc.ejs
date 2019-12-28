@@ -1,38 +1,37 @@
 <% include partials/header %>
-<h1>Results Page!!!</h1>
-<p>
-	 RESULT FOR-
-</p>
-<!-- <button href="/">Search Again!</button> -->
+<link href="css/login.css" rel="stylesheet" type="text/css">
 
-	<form action="/back" method="POST">
-	<button >Search Again!</button>
-	</form>
-
-<div class="container-fluid">
+<div class="container">
+	<div class="alert alert-light" role="alert">
+		<h1>Playlists</h1>
+		<p>
+			Your Playlists
+		</p>
+		<div class="alert alert-light" role="alert">
+			<form action="/back" method="POST">
+				<button class="btn btn-outline-success my-2 my-sm-0">Search Again!</button>
+			</form>
+		</div>
 	
-	
-    <form action="/newplaylist/<%=idp%>" method="GET">
-		<input type="text" placeholder="name" name="plyname">
-		<input type="submit">
-	</form>
-	<ul  class="list-group">
-		<% playlists.forEach(function(song) { %>
-		  <li class="list-group-item">
-			  <strong>
-				  <%= song["name"] %> -
-			  </strong>
-			  <form action="/showplay/<%=idp%>/<%=song._id%>" method="GET">
-				<input type="submit" value="ADD">
-			  </form>
-		  </li>
-		<% }) %>
-
-	</ul>
-
+	</div>
 </div>
 
 
-
+<div class="container">
+	<div class="row">
+		<% playlists.forEach(function(song) { %>
+			<div class="col">
+				<div class="card" style="width: 18rem;">
+					<div class="card-body">
+						<h5 class="card-title"><%= song["name"] %></h5>
+						<form action="/showplay/<%=idp%>/<%=song._id%>" method="GET">
+							<input class="btn btn-outline-success my-2 my-sm-0" role="button" type="submit" value="ADD">
+						</form>
+					</div>
+				</div>
+			</div>
+		<% }) %>
+	</div>
+</div>
 
 <% include partials/footer %>

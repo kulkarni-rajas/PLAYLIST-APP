@@ -88,6 +88,13 @@
 .container .info span .fa {
   color: #EF3B3A;
 }
-body {
-    background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRU_yM8cHdjq-v1nsbXDKdshnQ8hpVMadNAB5oU2J_cIJnCbT96');
-  }
+
+.card {
+  opacity: 75%;
+}
+.alert {
+  opacity: 75%;
+}
+.card-title {
+  opacity: 100%;
+}
