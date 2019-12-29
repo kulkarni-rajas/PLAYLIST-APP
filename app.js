@@ -98,7 +98,7 @@ app.get("/list",function(req,res){
 						   name:   song["title"],
 						   artist: song["artist"]["name"],
 					       audio:  song["preview"],
-						   image:  song["album"]["cover_small"]
+						   image:  song["album"]["cover_medium"]
 						}, function(err, asong){
 							if(err){
 								console.log(err);
@@ -349,4 +349,3 @@ function registerLOG(req,res,next){
 app.listen(3000,function(){
 	console.log("doof says yes");
 });
-
