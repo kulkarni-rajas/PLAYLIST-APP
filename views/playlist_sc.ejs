@@ -25,10 +25,9 @@
 		<% playlists.forEach(function(song) { %>
             <div class="col mb-4">
                 <div class="card-transparent h-100">
-                    <!-- <img src=<%=song["image"] %> class="card-img-top" alt="..."> -->
                     <div class="card-body">
                     <h4 class="card-title"><strong><%= song["name"] %></strong></h4>
-                    <!-- <p class="card-text><%=song["artist"]%></p> -->
+					<h5><strong>Created by-</strong><%=song["author"]%></h5>	
                     <form action="/showplay/<%=idp%>/<%=song._id%>" method="GET">
 						<input class="btn btn-outline-success my-2 my-sm-0" role="button" type="submit" value="ADD">
 					  </form>

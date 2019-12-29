@@ -56,6 +56,7 @@ var Playlist = mongoose.model("Playlist", playlistSchema);
 
 var playlistSCSchema = new mongoose.Schema({
    name:   String,
+   author: String,	
    playlist: [playlistSchema]
 });
 
@@ -98,7 +99,7 @@ app.get("/list",function(req,res){
 						   name:   song["title"],
 						   artist: song["artist"]["name"],
 					       audio:  song["preview"],
-						   image:  song["album"]["cover_small"]
+						   image:  song["album"]["cover_medium"]
 						}, function(err, asong){
 							if(err){
 								console.log(err);
@@ -123,6 +124,8 @@ app.get("/list",function(req,res){
 
 	app.get("/addplaylist/:id",isLoggedIn,function(req,res){
 		var idp=req.params.id;
+		//console.log(req.user.username);
+		
 	     PlaylistSC.find({}, function(err, songs){
 			if(err){
 				console.log("ERROR!");
@@ -142,11 +145,12 @@ app.get("/newplaylist/:id",function(req,res){
 //	res.redirect("");
 	PlaylistSC.create({
 	   name:   name,
+	   author: req.user.username,	
 	}, function(err, asong){
 		if(err){
 			console.log(err);
 		} else {
-			console.log(asong);
+			console.log(req.user.username);
 		}
 	});
 				
@@ -168,6 +172,7 @@ app.get("/showplay/:ida/:idb",function(req,res){
 
 		console.log(req.params.ida);
 	    console.log(req.params.idb);
+	    var plyid=req.params.idb;
 	
 		
 		PlaylistSC.findById(req.params.idb,function(err,foundPly){
@@ -198,18 +203,20 @@ app.get("/showplay/:ida/:idb",function(req,res){
 			}
 			console.log(foundPly)
 		});
+	 
+	res.redirect("/playlist/"+plyid);
 		
 		
  	});
 app.get("/playlist",isLoggedIn,function(req,res){
-		PlaylistSC.find({}, function(err, songs){
+		PlaylistSC.find({}, function(err, playlists){
 		if(err){
 			console.log("ERROR!");
 			console.log(err);
 		} else {
 		//	console.log(typeof songs)
-			console.log(songs[0]);
-			res.render("playlist_view",{Song: songs});
+			console.log(playlists);
+			res.render("playlist_view",{playlists: playlists});
 		}
 	});
 	
@@ -349,4 +356,3 @@ function registerLOG(req,res,next){
 app.listen(3000,function(){
 	console.log("doof says yes");
 });
-

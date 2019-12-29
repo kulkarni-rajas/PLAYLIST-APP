@@ -18,10 +18,10 @@
         <% Song.forEach(function(song) { %>
             <div class="col mb-4">
                 <div class="card-transparent h-100">
-                    <img src=<%=song["image"] %> class="card-img-top" alt="...">
+                    <img src=<%=song["image"]%> class="card-img-top" alt="...">
                     <div class="card-body">
                     <h4 class="card-title"><strong><%= song["name"] %></strong></h4>
-                    <p class="card-text><%=song["artist"]%></p>
+						<p class="card-text"><%=song["artist"]%></p>
                     <form action="/addplaylist/<%= song._id %>" method="GET">
                         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">ADD to playlist</button>
                   </form>
