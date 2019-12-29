@@ -6,6 +6,7 @@ var express     = require('express'),
     LocalStrategy = require("passport-local"),
 	passportLocalMongoose = require("passport-local-mongoose"),
     unirest     = require("unirest"),
+	methodOverride= require("method-override"),
 	reqd        = unirest("GET", "https://deezerdevs-deezer.p.rapidapi.com/search"),
 	app         = express(),  
 	flash       = require('connect-flash'),
@@ -15,10 +16,14 @@ app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());  
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(methodOverride("_method"))
 app.use(flash());
+
+// connecting to monggose server
 var mongoose = require("mongoose");
 mongoose.connect("mongodb://localhost/playlist_app");
 
+// passport authentication setup
 var UserSchema = new mongoose.Schema({
     username: String,
     password: String
@@ -44,6 +49,11 @@ app.use(function(req, res, next){
    res.locals.currentUser = req.user;
    next();
 });
+
+
+  //            //
+ // ALL MODELS //
+//            //   
 
 var playlistSchema = new mongoose.Schema({
    name:   String,
@@ -104,22 +114,27 @@ app.get("/list",function(req,res){
 							if(err){
 								console.log(err);
 							} else {
+								
 								console.log(asong);
 							}
 						});
+					
 				})
-		
-				Song.find({}, function(err, songs){
-					if(err){
-						console.log("ERROR!");
-						console.log(err);
-					} else {
-					//	console.log(typeof songs)
-					//	console.log(songs);
-						res.render("list",{Song: songs});
-					}
-				});
 			});
+	            res.redirect("/list_view");
+});
+
+app.get("/list_view",function(req,res){
+	
+	Song.find({}, function(err, songs){
+			if(err){
+				console.log("ERROR!");
+				console.log(err);
+			} else {
+				res.render("list",{Song: songs});
+			}
+		});
+	
 });
 
 	app.get("/addplaylist/:id",isLoggedIn,function(req,res){
@@ -153,17 +168,8 @@ app.get("/newplaylist/:id",function(req,res){
 			console.log(req.user.username);
 		}
 	});
-				
-	PlaylistSC.find({}, function(err, songs){
-		if(err){
-			console.log("ERROR!");
-			console.log(err);
-		} else {
-		//	console.log(typeof songs)
-			console.log(songs);
-			res.render("playlist_sc",{playlists: songs,idp:idp});
-		}
-	});
+	
+	res.redirect("/addplaylist/"+idp);
 	
 });
 
