@@ -11,14 +11,13 @@
 
 <div class="container">
     <div class="row row-cols-1 row-cols-md-3">
-		<% Song.forEach(function(song) { %>
+		<% playlists.forEach(function(playlist) { %>
             <div class="col mb-4">
                 <div class="card-transparent h-100">
-                    <!-- <img src=<%=song["image"] %> class="card-img-top" alt="..."> -->
                     <div class="card-body">
-						<h4 class="card-title"><strong><%= song["name"] %></strong></h4>
-						<!-- <p class="card-text><%=song["artist"]%></p> -->
-						<form action="/playlist/<%=song._id %>" method="GET">
+						<h4 class="card-title"><strong><%= playlist["name"] %></strong></h4>
+						<p class="card-text"><strong>CREATED BY-</strong><%=playlist["author"]%></p>
+						<form action="/playlist/<%=playlist._id %>" method="GET">
 							<input class="btn btn-outline-success my-2 my-sm-0" role="button" type="submit" value="List">
 						</form>
                     </div>
