@@ -1,30 +1,37 @@
 <% include partials/header %>
-	<form action="/back" method="POST">
-					<button >Search Again!</button>
-					</form>
-<div class="container-fluid">
-	<audio controls>
-  <source src="https://cdns-preview-e.dzcdn.net/stream/c-efe84e57a61d55f279c9f0c988eb4534-4.mp3.ogg" type="audio/ogg">
-  <source src="https://cdns-preview-e.dzcdn.net/stream/c-efe84e57a61d55f279c9f0c988eb4534-4.mp3.mp3" type="audio/mpeg">
-  Your browser does not support the audio tag.
-</audio>
-    
-	<ul  class="list-group">
-		<% Song.forEach(function(song) { %>
-		  <li class="list-group-item">
-			  <strong>
-				  <%= song["name"] %> -
-			  </strong> 
-				 <%=song["artist"]%>
-		  </li>
-		<!-- <form action="/delete/<%= song._id%>" method="POST">
-			<button >DELETE</button>
-		</form> -->
-		<% }) %>
+<link href="css/login.css" rel="stylesheet" type="text/css">
 
-	</ul>
-<form action="/list" method="GET">
-	<button  >list</button>
-</form>
+<div class="container">
+	<div class="alert alert-success">
+		<form action="/back" method="POST">
+			<button class="btn btn-outline-success my-2 my-sm-0" role="button" >Search Again!</button>	
+		</form>
+		<audio controls>
+			<source src="https://cdns-preview-e.dzcdn.net/stream/c-efe84e57a61d55f279c9f0c988eb4534-4.mp3.ogg" type="audio/ogg">
+			<source src="https://cdns-preview-e.dzcdn.net/stream/c-efe84e57a61d55f279c9f0c988eb4534-4.mp3.mp3" type="audio/mpeg">
+			Your browser does not support the audio tag.
+		</audio>
+	</div>
 </div>
+
+
+<div class="container">
+    <div class="row row-cols-1 row-cols-md-3">
+		<% Song.forEach(function(song) { %>
+            <div class="col mb-4">
+                <div class="card-transparent h-100">
+                    <!-- <img src=<%=song["image"] %> class="card-img-top" alt="..."> -->
+                    <div class="card-body">
+						<h4 class="card-title"><strong><%= song["name"] %></strong></h4>
+						<p class="card-text><%=song["artist"]%></p>
+						<form action="/list" method="GET">
+							<button class="btn btn-outline-success my-2 my-sm-0" role="button">list</button>
+						</form>
+                    </div>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+</div>
+
 <% include partials/footer %>

@@ -1,28 +1,47 @@
 # PLAYLIST-APP
-app for finding songs later to be added to a playlist where they will be playable
+[![forthebadge](https://forthebadge.com/images/badges/made-with-javascript.svg)](https://forthebadge.com)
+<br>
+[![Join the chat at https://gitter.im/NIT-dgp/General](https://badges.gitter.im/NIT-dgp/General.svg)](https://gitter.im/NIT-dgp/General?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+[![GSoC Heat 2020](https://img.shields.io/badge/GSoC%20Heat-2019-orange.svg)](https://nitdgpos.github.io/gsoc_heat)
+<br>
+[![forthebadge](https://forthebadge.com/images/badges/uses-html.svg)](https://forthebadge.com)
+[![forthebadge](https://forthebadge.com/images/badges/uses-css.svg)](https://forthebadge.com)
+[![forthebadge](https://forthebadge.com/images/badges/uses-js.svg)](https://forthebadge.com)
+[![forthebadge](https://forthebadge.com/images/badges/uses-git.svg)](https://forthebadge.com)
+
+
+An app for finding songs later to be added to a playlist where they will be playable
+
+## Contribution guidelines
+Kindly follow [contributing.md](contributing.md), if you want to lend a hand in making this project better.
+
+## Build Setup
 
 ### Requirements:
 * NodeJS
 * Mongodb
 
-### How to Build the project 
-* Make a Directory
-> mkdir proj
+```bash
 
-> cd proj
 
-* Clone the Repository
-> git clone https://github.com/harshith331/PLAYLIST-APP.git
+#Make Directory 
+mkdir project
+cd project
 
-* Change directory
-> cd PLALIST-APP
+#Clone the Repository
+git clone https://github.com/harshith331/PLAYLIST-APP.git
 
-* Start MongoDB server in a parallel terminal
-> sudo service mongod start
-* Check Status
-> sudo service mongod status
+#Change directory
+cd PLALIST-APP
 
-* Launch App by
-> node app.js
+#Start MongoDB
+sudo service mongod start
+#Check Status
+sudo service mongod status
 
-* App hosted at http://localhost:3000/
+#Launch App by
+node app.js
+
+#App hosted at 
+http://localhost:3000/
