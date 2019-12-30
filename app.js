@@ -148,7 +148,7 @@ app.get("/list_view",function(req,res){
 			} else {
 			//	console.log(typeof songs)
 			//	console.log(songs);
-				res.render("playlist_sc",{playlists: songs,idp:idp});
+				res.render("playlist_sc",{playlists: songs,idp:idp,user:req.user.username});
 			}
 		});
 	});
@@ -222,7 +222,7 @@ app.get("/playlist",isLoggedIn,function(req,res){
 		} else {
 		//	console.log(typeof songs)
 			console.log(playlists);
-			res.render("playlist_view",{playlists: playlists});
+			res.render("playlist_view",{playlists: playlists,user:req.user.username});
 		}
 	});
 	
@@ -235,19 +235,20 @@ app.get("/playlist/:id",function(req,res){
 			console.log("ERROR!");
 			console.log(err);
 		} else {
-			console.log(songs.playlist[0])
+		//	console.log(songs.playlist[0])
 			if(songs.playlist[0]){
 				console.log("yes");
-			res.render("song_view",{Song: songs,play:songs.playlist[0]["audio"]});
+			res.render("song_view",{Playlist: songs,play:songs.playlist[0]["audio"],user:req.user.username});
 			}
 			else{
 				console.log("no");
-				res.render("song_view",{Song: songs,play:null });
+				res.render("song_view",{Playlist: songs,play:null,user:req.user.username });
 			}
 		}
 	});
 	
 });
+
 app.get("/playsong/:ida/:idb",function(req,res){
 	//console.log(req.params.idx)
 	var ida= req.params.ida;
@@ -261,7 +262,7 @@ app.get("/playsong/:ida/:idb",function(req,res){
 					foundPly.playlist.forEach(function(foundSong){
 					if(foundSong._id==idb){
 					  console.log(foundSong);
-					  return res.render("song_view",{Song: foundPly,play:foundSong["audio"]});
+					  return res.render("song_view",{Playlist: foundPly,play:foundSong["audio"]});
 					}
 
 			 });
@@ -284,6 +285,36 @@ app.get("/playsong/:ida/:idb",function(req,res){
 	
 // });
 
+app.delete("/playlist/:id",function(req,res){
+	PlaylistSC.findByIdAndRemove(req.params.id,function(err){
+		if(err){
+			console.log(err);
+		}
+		else{
+			res.redirect("/playlist");
+		}
+	});
+});
+
+// app.delete("/playlist/:ida/:idb",function(req,res){
+// 	console.log("------------------------");
+// 	console.log(req.params.ida,req.params.idb);
+// 	PlaylistSC.findById(req.params.ida,function(err,found){
+// 	if(err){
+// 			console.log(err);
+// 		}
+// 		else{
+// 			console.log(found["playlist"]);
+// 			var foundlist=found["playlist"];
+// 			foundlist.findById(req.params.idb,function(err,found2){
+// 				console.log(found2);
+				
+// 			})
+// 		}
+// 	});
+// 	res.redirect("/playlist/"+req.params.ida);
+	
+// });
 
 app.post("/back",function(req,res){
 	Song.deleteMany({}, function (err) {
