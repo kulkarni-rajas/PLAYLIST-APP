@@ -22,17 +22,19 @@
 <div class="container">
     <div class="row row-cols-1 row-cols-md-3">
 		<% playlists.forEach(function(song) { %>
+		     <%if(user===song["author"]){%>
             <div class="col mb-4">
                 <div class="card-transparent h-100">
                     <div class="card-body">
                     <h4 class="card-title"><strong><%= song["name"] %></strong></h4>
-					<h5><strong>Created by-</strong><%=song["author"]%></h5>	
+					<!-- <h5><strong>Created by-</strong><%=song["author"]%></h5>	 -->
                     <form action="/showplay/<%=idp%>/<%=song._id%>" method="GET">
 						<input class="btn btn-outline-success my-2 my-sm-0" role="button" type="submit" value="ADD">
 					  </form>
                     </div>
                 </div>
             </div>
+		    <% } %>
         <% }) %>
     </div>
 </div>
