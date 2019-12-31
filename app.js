@@ -13,9 +13,9 @@ var express     = require('express'),
 	result,song,obj2,empty=null; 
 
 app.set('view engine', 'ejs');
-app.use(express.static(__dirname + '/public'));
-app.use(bodyParser.json());  
+app.use(express.static(__dirname + '/public')); 
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json()); 
 app.use(methodOverride("_method"))
 app.use(flash());
 
@@ -88,8 +88,9 @@ app.get("/", function(req, res){
 });
 
 app.get("/list",function(req,res){
-	song=req.query.Search;
-	 console.log(song);
+	song=req.body.Search;
+	console.log(req.body.Search);
+	// console.log(song);
 			reqd.query({
 			"q": "" + song+ ""
 		});
@@ -115,7 +116,7 @@ app.get("/list",function(req,res){
 								console.log(err);
 							} else {
 								
-								console.log(asong);
+								//console.log(asong);
 							}
 						});
 					
@@ -347,8 +348,8 @@ app.post("/register", function(req, res){
 			res.send("username already taken");
         }
          passport.authenticate("local")(req, res, function(){
-			 res.send("successfully registered");
-//res.redirect("/"); 
+		//	 res.send("successfully registered");
+              res.redirect("/"); 
         });
     });
 });
