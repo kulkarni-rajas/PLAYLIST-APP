@@ -362,7 +362,7 @@ app.get("/login",registerLOG, function(req, res){
 // handling login logic
 app.post("/login", passport.authenticate("local", 
     {
-        successRedirect: "/list",
+        successRedirect: "/list_view",
         failureRedirect: "/login",
 	    failureFlash: 'Invalid username or password.'
     }), function(req, res){
