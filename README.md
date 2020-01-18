@@ -1,4 +1,4 @@
-# PLAYLIST-APP
+# PlayPal
 [![forthebadge](https://forthebadge.com/images/badges/made-with-javascript.svg)](https://forthebadge.com)
 <br>
 [![Join the chat at https://gitter.im/NIT-dgp/General](https://badges.gitter.im/NIT-dgp/General.svg)](https://gitter.im/NIT-dgp/General?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -37,7 +37,7 @@ mkdir project
 cd project
 
 #Clone the Repository
-git clone https://github.com/harshith331/PLAYLIST-APP.git
+git clone https://github.com/harshith331/PlayPal.git
 
 #Change directory
 cd PLALIST-APP
