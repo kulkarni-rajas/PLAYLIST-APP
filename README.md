@@ -19,8 +19,15 @@ Kindly follow [contributing.md](contributing.md), if you want to lend a hand in 
 ## Build Setup
 
 ### Requirements:
+
 * NodeJS
+   - [guide](https://nodejs.org/en/download/)
+ 
+* npm
+   - [guide](https://docs.npmjs.com/cli/install)
+ 
 * Mongodb
+  - The database used in the app is MongoDB, so it must be configured on you local machine. Follow the [guide](https://docs.mongodb.com/manual/administration/install-on-linux/) if you dont have MongoDB installed
 
 ```bash
 
