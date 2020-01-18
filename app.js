@@ -14,14 +14,14 @@ var express     = require('express'),
 
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/public')); 
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json()); 
 app.use(methodOverride("_method"))
 app.use(flash());
 
 // connecting to monggose server
 var mongoose = require("mongoose");
-mongoose.connect("mongodb://localhost/playlist_app");
+mongoose.connect("mongodb://localhost/playlist_app",{ useNewUrlParser: true });
 
 // passport authentication setup
 var UserSchema = new mongoose.Schema({
@@ -87,12 +87,13 @@ app.get("/", function(req, res){
 
 });
 
-app.get("/list",function(req,res){
+app.post("/list",function(req,res){
 	song=req.body.Search;
+	//song="light it up";
 	console.log(req.body.Search);
 	// console.log(song);
 			reqd.query({
-			"q": "" + song+ ""
+			"q": "" +song+ ""
 		});
 
 		reqd.headers({
@@ -103,7 +104,7 @@ app.get("/list",function(req,res){
 	    reqd.end(function (resd) {
 			 if (resd.error) throw new Error(resd.error);
 				result= resd.body;
-			//console.log(result["data"][0]);
+			    //console.log(result["data"][0]);
 			    result["data"].forEach(function(song){
 					
 					Song.create({
@@ -361,7 +362,7 @@ app.get("/login",registerLOG, function(req, res){
 // handling login logic
 app.post("/login", passport.authenticate("local", 
     {
-        successRedirect: "/list",
+        successRedirect: "/list_view",
         failureRedirect: "/login",
 	    failureFlash: 'Invalid username or password.'
     }), function(req, res){
