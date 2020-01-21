@@ -356,7 +356,7 @@ app.get("/register", function(req, res){
 //handle sign up logic
 app.post("/register", function(req, res){
 	console.log(4,req.body)
-	const{pasword,confirmPassword}=req.body
+	const{password,confirmPassword}=req.body
 	
 	if(password===confirmPassword)
 	{
