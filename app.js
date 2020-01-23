@@ -1,7 +1,8 @@
 var express     = require('express'),  
     bodyParser  = require('body-parser'),  
     mongodb     = require('mongodb'),  
-    MongoClient = mongodb.MongoClient,
+	MongoClient = mongodb.MongoClient,
+	ObjectID    = mongodb.ObjectID,
     passport    = require("passport"),
     LocalStrategy = require("passport-local"),
 	passportLocalMongoose = require("passport-local-mongoose"),
@@ -18,6 +19,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride("_method"))
 app.use(flash());
+
+const port = 3017
 
 // connecting to monggose server
 var mongoose = require("mongoose");
@@ -288,6 +291,7 @@ app.get("/playsong/:ida/:idb",function(req,res){
 // });
 
 app.delete("/playlist/:id",function(req,res){
+	console.log("deleting my playlist")
 	PlaylistSC.findByIdAndRemove(req.params.id,function(err){
 		if(err){
 			console.log(err);
@@ -298,7 +302,32 @@ app.delete("/playlist/:id",function(req,res){
 	});
 });
 
-// app.delete("/playlist/:ida/:idb",function(req,res){
+app.post("/playlist/:ida/:idb",(req,res)=>{
+	 const ida = req.params.ida;
+	 const idb = req.params.idb;
+	console.log(ida,idb)
+	PlaylistSC.findById(req.params.ida,(error,result)=>{
+		const list = result.playlist;
+		var j=0;
+		for(var i=0;i<list.length;i++)
+		{
+			if(idb.toString()===(list[i]._id.toString()))
+			{
+			   j=i
+			   break;
+			}
+		}
+		list.splice(j,1)
+		console.log(list)
+		PlaylistSC.findByIdAndUpdate(ida,{playlist:list},(error,res)=>{
+			console.log("The playlist has been updated.")
+		})
+	})
+	     
+		  res.redirect('/playlist/'+ida) 
+	 
+})
+// app.delete("/playlist/:ida/:idb",  function(req,res){
 // 	console.log("------------------------");
 // 	console.log(req.params.ida,req.params.idb);
 // 	PlaylistSC.findById(req.params.ida,function(err,found){
@@ -392,6 +421,6 @@ function registerLOG(req,res,next){
 		}
 }
 
-app.listen(3000,function(){
-	console.log("doof says yes");
+app.listen(port,function(){
+	console.log("The port active on is:",port);
 });
