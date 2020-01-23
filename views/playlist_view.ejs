@@ -18,8 +18,8 @@
                     <div class="card-body">
 						<h4 class="card-title"><strong><%= playlist["name"] %></strong></h4>
 						<!-- <p class="card-text"><strong>CREATED BY-</strong><%=playlist["author"]%></p> -->
-						<input action=/playlist/<%=playlist._id %> method="GET">
-							<input class="btn btn-outline-success my-2 my-sm-0" role="button" type="submit" value="List">
+						<form action="/playlist/<%=playlist._id %>" method="GET">
+							<input class="btn btn-outline-success my-2 my-sm-0" role="button" type="submit" value="List"></input>
 						</form>
 						<br>
 						<form action="/playlist/<%=playlist._id %>?_method=DELETE" method="POST">
