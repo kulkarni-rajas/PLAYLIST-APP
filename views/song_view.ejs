@@ -26,9 +26,15 @@
                     <div class="card-body">
 						<h4 class="card-title"><strong><%= song["name"] %></strong></h4>
 						<p class="card-text"><%=song["artist"]%></p>
-						<form action=/playsong/<%=Playlist._id %>/<%=song._id %> method="GET">
+						<span>
+						<form action="/playsong/<%=Playlist._id %>/<%=song._id %>" method="GET">
 							<input class="btn btn-outline-success my-2 my-sm-0" role="button" type="submit" value="play">
 						</form>
+
+						<form action="/playlist/<%=Playlist._id/<%=song._id>"  method="DELETE">
+							<input class="btn btn-outline-danger my-2 my-sm-0" role="button" type="submit" value="Delete">
+						</form>
+						</span>
                     </div>
                 </div>
             </div>

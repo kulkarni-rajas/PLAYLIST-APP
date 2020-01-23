@@ -310,6 +310,13 @@ app.delete("/playlist/:id",function(req,res){
 	});
 });
 
+app.delete("/playlists/:id1/:id2",async (req,res)=>{
+	const id1 = req.params.id1;
+	const id2 = req.params.id2;
+	const playlist = PlaylistSC.findById(id1)
+    
+})
+
 // app.delete("/playlist/:ida/:idb",function(req,res){
 // 	console.log("------------------------");
 // 	console.log(req.params.ida,req.params.idb);
