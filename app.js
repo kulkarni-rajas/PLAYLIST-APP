@@ -19,9 +19,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride("_method"))
 app.use(flash());
 
+const port = 3000
+
+
 // connecting to monggose server
 var mongoose = require("mongoose");
-mongoose.connect("mongodb://localhost/playlist_app",{ useNewUrlParser: true });
+mongoose.connect("mongodb://localhost/playlist_app",{ useNewUrlParser: true,useUnifiedTopology: true });
 
 // passport authentication setup
 var UserSchema = new mongoose.Schema({
@@ -47,6 +50,7 @@ passport.deserializeUser(User.deserializeUser());
 
 app.use(function(req, res, next){
    res.locals.currentUser = req.user;
+   //console.log(1,res.locals.currentUser)
    next();
 });
 
@@ -83,14 +87,16 @@ var Song = mongoose.model("Song", songSchema);
 
 
 app.get("/", function(req, res){
-        res.render("landing");
+	console.log("back1")
+	res.redirect("/back");
 
 });
 
 app.post("/list",function(req,res){
 	song=req.body.Search;
 	//song="light it up";
-	console.log(req.body.Search);
+	console.log(2,req.body)
+	console.log(3,req.body.Search);
 	// console.log(song);
 			reqd.query({
 			"q": "" +song+ ""
@@ -102,10 +108,14 @@ app.post("/list",function(req,res){
 		});
 		
 	    reqd.end(function (resd) {
-			 if (resd.error) throw new Error(resd.error);
+			 if (resd.error) 
+			 {throw new Error(resd.error);}
 				result= resd.body;
-			    //console.log(result["data"][0]);
-			    result["data"].forEach(function(song){
+				//console.log(result["data"][0]);
+				console.log(3,result)
+				const data = result["data"]
+				
+				data.forEach(function(song){
 					
 					Song.create({
 						   name:   song["title"],
@@ -142,7 +152,7 @@ app.get("/list_view",function(req,res){
 	app.get("/addplaylist/:id",isLoggedIn,function(req,res){
 		var idp=req.params.id;
 		//console.log(req.user.username);
-		
+		//console.log(5,req.user)
 	     PlaylistSC.find({}, function(err, songs){
 			if(err){
 				console.log("ERROR!");
@@ -157,6 +167,7 @@ app.get("/list_view",function(req,res){
 
 app.get("/newplaylist/:id",function(req,res){
 	var idp= req.params.id;
+
 	var name= req.query.plyname;
 	console.log(name);
 //	res.redirect("");
@@ -318,11 +329,15 @@ app.delete("/playlist/:id",function(req,res){
 	
 // });
 
+app.get("/back",(req,res)=>{
+	res.render("landing");
+})
+
 app.post("/back",function(req,res){
 	Song.deleteMany({}, function (err) {
 	  if (err) return handleError(err);
 	});
-	res.redirect("/");
+	res.redirect("/back");
 });
 
 app.post("/delete/:id",function(req,res){
@@ -340,7 +355,11 @@ app.get("/register", function(req, res){
 });
 //handle sign up logic
 app.post("/register", function(req, res){
+	console.log(4,req.body)
+	const{password,confirmPassword}=req.body
 	
+	if(password===confirmPassword)
+	{
     var newUser = new User({username: req.body.username});
     User.register(newUser, req.body.password, function(err, user){
         if(err){
@@ -352,7 +371,10 @@ app.post("/register", function(req, res){
 		//	 res.send("successfully registered");
               res.redirect("/"); 
         });
-    });
+	});
+}else{
+	res.redirect('/register') 
+}
 });
 
 // show login form
@@ -392,6 +414,6 @@ function registerLOG(req,res,next){
 		}
 }
 
-app.listen(3000,function(){
-	console.log("doof says yes");
+app.listen(port,function(){
+	console.log("The app is active on ",port);
 });
