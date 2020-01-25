@@ -87,6 +87,11 @@ app.get("/", function(req, res){
 
 });
 
+app.get("/errorinSearch", function(req, res){
+	res.render("errorinSearch");
+
+});
+
 app.post("/list",function(req,res){
 	song=req.body.Search;
 	//song="light it up";
@@ -102,8 +107,17 @@ app.post("/list",function(req,res){
 		});
 		
 	    reqd.end(function (resd) {
-			 if (resd.error) throw new Error(resd.error);
-				result= resd.body;
+			 if (resd.error)throw new Error(resd.error);
+				
+			 
+			 	result= resd.body;
+
+				if(result["data"]== null)
+				{
+					res.redirect("/errorinSearch");
+				}
+				
+				else{
 			    //console.log(result["data"][0]);
 			    result["data"].forEach(function(song){
 					
@@ -121,9 +135,15 @@ app.post("/list",function(req,res){
 							}
 						});
 					
-				})
+				});
+			
+				res.redirect("/list_view");
+			}
+			
 			});
-	            res.redirect("/list_view");
+
+				
+		
 });
 
 app.get("/list_view",function(req,res){
