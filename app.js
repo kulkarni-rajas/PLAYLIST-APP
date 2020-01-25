@@ -273,6 +273,43 @@ app.get("/playsong/:ida/:idb",function(req,res){
 });
 
 
+app.post("/delsong/:ida/:idb",function(req,res){
+	//console.log(req.params.idx)
+	var ida= req.params.ida;
+	var idb= req.params.idb;
+	var playbuf=[];
+		PlaylistSC.findById(req.params.ida,function(err,foundPly){
+		if(err){
+			console.log(err);
+		}
+		else{
+			  console.log(foundPly);
+			  		playbuf=[];
+					foundPly.playlist.forEach(function(foundSong){
+					if(foundSong._id!=idb){
+					  console.log(foundSong);
+						playbuf.push(foundSong);
+
+					}
+					
+					
+
+			 });
+
+			 
+		}
+
+	});
+
+	PlaylistSC.findByIdAndUpdate(ida,{playlist:playbuf},(error,res)=>{
+		console.log("The playlist has been updated.")
+	})
+
+	res.redirect('/playlist/'+ida);
+
+});
+
+
 	
 // app.get("/playlistCV",function(req,res){
 		
