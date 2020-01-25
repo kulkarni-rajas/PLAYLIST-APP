@@ -139,6 +139,18 @@ app.get("/list_view",function(req,res){
 	
 });
 
+app.get("/signinDone",function(req,res){
+	
+	res.render("signinDone");
+	
+});
+
+app.get("/signinFail",function(req,res){
+	
+	res.render("signinFail");
+	
+});
+
 	app.get("/addplaylist/:id",isLoggedIn,function(req,res){
 		var idp=req.params.id;
 		//console.log(req.user.username);
@@ -399,8 +411,8 @@ app.get("/login",registerLOG, function(req, res){
 // handling login logic
 app.post("/login", passport.authenticate("local", 
     {
-        successRedirect: "/list_view",
-        failureRedirect: "/login",
+        successRedirect: "/signinDone",
+        failureRedirect: "/signinFail",
 	    failureFlash: 'Invalid username or password.'
     }), function(req, res){
 });
