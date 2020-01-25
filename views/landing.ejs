@@ -7,13 +7,90 @@
 	<div class="row">
 		<!-- <div class="col-md-3"></div> -->
 		<div class="form">  
-			<form action="/list" method="POST">
-				<input type="text" placeholder="Song" name="Search">
-				<input class="btn btn-outline-success my-2 my-sm-0" role="button" type="submit">
-			</form>
+			
+				<input type="text" placeholder="Song" name="Search" id="mytext">
+				<input class="btn btn-outline-success my-2 my-sm-0" role="button" type="submit" onClick="getdata()">
+			
 		</div>
 	</div>
+
+	<div class="container">
+		<div class="row row-cols-1 row-cols-md-3">
+				<div class="col mb-4 putcards">
+					</div>
+				</div>
+			</div>
+	 </div>
+	 
+	 
+	<script>
+	function getdata(){
+		
+		var search=document.getElementById("mytext").value;
+		console.log(search);
+		console.log(4)
+		var openurl = "https://deezerdevs-deezer.p.rapidapi.com/search?q=" + search
+		var settings = {
+	"async": true,
+	"crossDomain": true,
+	"url": openurl,
+	"method": "GET",
+	"headers": {
+		"x-rapidapi-host": "deezerdevs-deezer.p.rapidapi.com",
+		"x-rapidapi-key": "69fccf299amshb6e2f8cee3e4649p1e45f5jsn8ba7016e3003"
+	}
+}
+
+$.ajax(settings).done((response) =>{
 	
-</div>
+	const data = response.data;
+	// 		data.forEach((song) =>{
+	// 	//    $(".photo").attr("src",song.album.cover)
+	// 	//    $(".title").text(song.title)
+	// 	//    $(".text").text(song.artist.name)
+		  
+    //         // cards.push(
+
+	// 		// 	<div class="card-transparent h-100">
+	// 		// 			<img src = "${song.album.cover}" class="card-img-top" alt="...">
+	// 		// 			<div class="card-body">
+	// 		// 			<h4 class="card-title title"><strong>${song.title}</strong></h4>
+	// 		// 				<p class="card-text text">${song.artist.name}</p>
+	// 		// 			</div>
+	// 		// 		</div>
+	// 		// )  
+			    
+	//   });             
+	console.log(data)
+	var search1=document.getElementById("mytext").value;
+	function renderTracks() {
+return `
+${data.map(song =>
+`   
+	 <div class="card-transparent h-100">
+	 		<img src = "${song.album.cover_medium}" class="card-img-top" alt="...">
+			      <div class="card-body">
+			            <h4 class="card-title title"><strong>${song.title}</strong></h4>
+			            <p class="card-text text">${song.artist.name}</p>
+					</div>
+					<form action="/addplaylist/${search1}/${song.id}/" method="GET">
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">ADD to playlist</button>
+                  </form>
+			
+	</div>
+	`
+)}
+`
+}
+let cards = `${renderTracks()}`;
+     console.log(cards)
+	  $('.putcards').append(`<div class="col mb-4">`+cards+"</div>")
+
+});
+	}
+	</script>
+
+
+
  
 <% include partials/footer %>

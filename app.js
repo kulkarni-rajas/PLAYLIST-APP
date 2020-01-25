@@ -13,6 +13,16 @@ var express     = require('express'),
 	result,song,obj2,empty=null; 
 const validator = require("validator")
 
+
+var jsdom = require("jsdom");
+const { JSDOM } = jsdom;
+const { window } = new JSDOM();
+const { document } = (new JSDOM('')).window;
+global.document = document;
+
+var $ = jQuery = require('jquery')(window);
+
+
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/public')); 
 app.use(bodyParser.json());
@@ -20,7 +30,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride("_method"))
 app.use(flash());
 
-const port = 3012
+const port = 3000
+
+
 
 
 // connecting to monggose server
@@ -86,35 +98,97 @@ var songSchema = new mongoose.Schema({
 
 var Song = mongoose.model("Song", songSchema);
 
-
-app.get("/", function(req, res){
+// const getdata = ()=>{
+// 	console.log(32)
+// 	var settings = {
+// 		"async": true,
+// 		"crossDomain": true,
+// 		"url": "https://deezerdevs-deezer.p.rapidapi.com/search?q=eminem",
+// 		"method": "GET",
+// 		"headers": {
+// 			"x-rapidapi-host": "deezerdevs-deezer.p.rapidapi.com",
+// 			"x-rapidapi-key": "69fccf299amshb6e2f8cee3e4649p1e45f5jsn8ba7016e3003"
+// 		}
+// 	}
+	
+// 	$.ajax(settings).done(function (response) {
+// 		console.log(response);
+// 	});
+// }
+app.get("/", async function(req, res){
 	console.log("back1")
+	// await getdata()
 	res.redirect("/back");
 
 });
 
+// app.post("/list",function(req,res){
+// 	song=req.body.Search;
+// 	//song="light it up";
+// 	console.log(2,req.body)
+// 	console.log(3,req.body.Search);
+// 	// console.log(song);
+// 			reqd.query({
+// 			"q": "" +song+ ""
+// 		});
+
+// 		reqd.headers({
+// 			"x-rapidapi-host": "deezerdevs-deezer.p.rapidapi.com",
+// 			"x-rapidapi-key": "45eff3d17amsha881e5fec2254d6p1b4718jsn949ef4e06f56"
+// 		});
+		
+// 	    reqd.end(function (resd) {
+// 			 if (resd.error) 
+// 			 {throw new Error(resd.error);}
+// 				result= resd.body;
+// 				//console.log(result["data"][0]);
+// 				console.log(3,result)
+// 				const data = result["data"]
+				
+// 				data.forEach(function(song){
+					
+// 					Song.create({
+// 						   name:   song["title"],
+// 						   artist: song["artist"]["name"],
+// 					       audio:  song["preview"],
+// 						   image:  song["album"]["cover_medium"]
+// 						}, function(err, asong){
+// 							if(err){
+// 								console.log(err);
+// 							} else {
+								
+// 								//console.log(asong);
+// 							}
+// 						});
+					
+// 				})
+// 			});
+// 	            res.redirect("/list_view");
+// });
+
 app.post("/list",function(req,res){
 	song=req.body.Search;
 	//song="light it up";
-	console.log(2,req.body)
-	console.log(3,req.body.Search);
+	console.log(2,req.body);
+	console.log(3,song)
 	// console.log(song);
-			reqd.query({
-			"q": "" +song+ ""
-		});
-
-		reqd.headers({
+			
+	const urlopen = "https://deezerdevs-deezer.p.rapidapi.com/search?q=" + song
+	var settings = {
+		"async": true,
+		"crossDomain": true,
+		"url": urlopen,
+		"method": "GET",
+		"headers": {
 			"x-rapidapi-host": "deezerdevs-deezer.p.rapidapi.com",
-			"x-rapidapi-key": "45eff3d17amsha881e5fec2254d6p1b4718jsn949ef4e06f56"
-		});
-		
-	    reqd.end(function (resd) {
-			 if (resd.error) 
-			 {throw new Error(resd.error);}
-				result= resd.body;
+			"x-rapidapi-key": "69fccf299amshb6e2f8cee3e4649p1e45f5jsn8ba7016e3003"
+		}
+	}
+	
+	$.ajax(settings).done(function (response) {
+		console.log(response);
+		data= response.data;
 				//console.log(result["data"][0]);
-				console.log(3,result)
-				const data = result["data"]
 				
 				data.forEach(function(song){
 					
@@ -126,17 +200,15 @@ app.post("/list",function(req,res){
 						}, function(err, asong){
 							if(err){
 								console.log(err);
-							} else {
-								
-								//console.log(asong);
 							}
 						});
 					
 				})
-			});
-	            res.redirect("/list_view");
+	});
+	res.redirect("/list-view")
 });
 
+	
 app.get("/list_view",function(req,res){
 	
 	Song.find({}, function(err, songs){
@@ -150,8 +222,9 @@ app.get("/list_view",function(req,res){
 	
 });
 
-	app.get("/addplaylist/:id",isLoggedIn,function(req,res){
+app.get("/addplaylist/:search/:id",isLoggedIn,function(req,res){
 		var idp=req.params.id;
+		var search= req.params.search
 		//console.log(req.user.username);
 		//console.log(5,req.user)
 	     PlaylistSC.find({}, function(err, songs){
@@ -161,10 +234,11 @@ app.get("/list_view",function(req,res){
 			} else {
 			//	console.log(typeof songs)
 			//	console.log(songs);
-				res.render("playlist_sc",{playlists: songs,idp:idp,user:req.user.username});
+				res.render("playlist_sc",{playlists: songs,idp:idp,user:req.user.username,search: search});
 			}
 		});
 	});
+
 
 app.get("/newplaylist/:id",function(req,res){
 	var idp= req.params.id;
@@ -188,12 +262,12 @@ app.get("/newplaylist/:id",function(req,res){
 });
 
 	
-app.get("/showplay/:ida/:idb",function(req,res){
+app.get("/showplay/:search/:ida/:idb", (req,res)=>{
 
 		console.log(req.params.ida);
 	    console.log(req.params.idb);
 	    var plyid=req.params.idb;
-	
+	    var song = req.params.search
 		
 		PlaylistSC.findById(req.params.idb,function(err,foundPly){
 			if(err){
@@ -201,33 +275,71 @@ app.get("/showplay/:ida/:idb",function(req,res){
 			}
 			else{
 			   //    console.log(foundPly);
-				   Song.findById(req.params.ida,function(err,foundSong){
-					  if(err){
-						console.log(err);
-					   }
-					  else{
-						  console.log(foundSong);
+				//    Song.findById(req.params.ida,function(err,foundSong){
+				// 	  if(err){
+				// 		console.log(err);
+				// 	   }
+				// 	  else{
+				// 		  console.log(foundSong);
+				// 		  var currply=foundPly;
+				// 		  currply.playlist.push({
+				// 			 name:   foundSong["name"],
+				// 			 artist: foundSong["artist"],
+				// 			 audio:  foundSong["audio"],
+				// 			 image:  foundSong["image"] 
+
+				// 		});
+				// 		  currply.save();
+				// 	  }
+			
+		        //   });
+			const urlopen = "https://deezerdevs-deezer.p.rapidapi.com/search?q=" + song
+			
+			var settings = {
+		"async": true,
+		"crossDomain": true,
+		"url": urlopen,
+		"method": "GET",
+		"headers": {
+			"x-rapidapi-host": "deezerdevs-deezer.p.rapidapi.com",
+			"x-rapidapi-key": "69fccf299amshb6e2f8cee3e4649p1e45f5jsn8ba7016e3003"
+		}
+	}
+	
+	     $.ajax(settings).done(function (response) {
+		data= response.data;
+                console.log("data")
+				for(var i=0;i<data.length;i++){
+					console.log(1,data[i].id)
+					console.log(2,req.params.ida)
+					if(data[i].id == req.params.ida){
+					     console.log("found")
 						  var currply=foundPly;
 						  currply.playlist.push({
-							 name:   foundSong["name"],
-							 artist: foundSong["artist"],
-							 audio:  foundSong["audio"],
-							 image:  foundSong["image"] 
+							 name:   data[i].title,
+							 artist: data[i].artist.name,
+							 audio:  data[i].preview,
+							 image:  data[i].album.cover_medium 
 
 						});
-						  currply.save();
-					  }
+						  currply.save().then(()=>{
+							res.redirect("/playlist/"+plyid);
+						  });
+						  break;
+						}
+					}
+				})
+		}
+		console.log(foundPly)
+	});
 			
-		          });
 			
-			}
-			console.log(foundPly)
-		});
+	
+		
+		
+});
 	 
-	res.redirect("/playlist/"+plyid);
-		
-		
- 	});
+
 app.get("/playlist",isLoggedIn,function(req,res){
 		PlaylistSC.find({}, function(err, playlists){
 		if(err){
