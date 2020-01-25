@@ -357,6 +357,7 @@ app.get("/register", function(req, res){
 //handle sign up logic
 app.post("/register", function(req, res){
 
+
 	const{password,confirmPassword}=req.body
     var errors =[]
 
@@ -369,6 +370,9 @@ app.post("/register", function(req, res){
 	{
 		errors.push("Password should contain at least 8 characters")
 	}
+
+// 	console.log(4,req.body)
+// 	const{password,confirmPassword}=req.body
 
 	if(password===confirmPassword)
 	{
@@ -435,6 +439,3 @@ function registerLOG(req,res,next){
 app.listen(port,function(){
 	console.log("The app is active on ",port);
 });
-
-
-
