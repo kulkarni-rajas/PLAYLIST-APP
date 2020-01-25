@@ -1,25 +1,10 @@
 <% include ./partials/header %> 
 <link href="css/login.css" rel="stylesheet" type="text/css">
 
-
 <div class="container">
-  <div class="alert alert-success"
+  <div class="alert alert-success">
     <h1 id="n">Sign Up</h1>
   </div>
-
-  <%if (typeof errors!= 'undefined'){%>
-    <% if(errors.length!==0){%>
-      <ul>
-    <% errors.forEach((error)=>{  %>
-      <div class="alert alert-danger">
-        <li> <%=error %></li>
-        </div>
-      <%});%>
-      </ul>
-    <%}%>
-   
-    <%}%>
-
 <div class="login-page">
     <div class="form">
         <form action="/register" method="post">

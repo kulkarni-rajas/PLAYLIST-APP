@@ -11,7 +11,6 @@ var express     = require('express'),
 	app         = express(),  
 	flash       = require('connect-flash'),
 	result,song,obj2,empty=null; 
-const validator = require("validator")
 
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/public')); 
@@ -20,7 +19,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride("_method"))
 app.use(flash());
 
-const port = 3012
+const port = 3000
 
 
 // connecting to monggose server
@@ -352,51 +351,30 @@ app.post("/delete/:id",function(req,res){
 
 
 app.get("/register", function(req, res){
-   res.render("signup",{errors:undefined}); 
+   res.render("signup"); 
 });
 //handle sign up logic
 app.post("/register", function(req, res){
-
-
+	console.log(4,req.body)
 	const{password,confirmPassword}=req.body
-    var errors =[]
-
-	if(validator.isAlphanumeric(password))
-	{
-		errors.push("Password should contain at least one special character")
-	}
-
-	if(password.length<=8)
-	{
-		errors.push("Password should contain at least 8 characters")
-	}
-
-// 	console.log(4,req.body)
-// 	const{password,confirmPassword}=req.body
-
+	
 	if(password===confirmPassword)
 	{
-		
     var newUser = new User({username: req.body.username});
     User.register(newUser, req.body.password, function(err, user){
         if(err){
-            
+            console.log(err);
             //return res.render("signup");
-			errors.push("Username already taken");
+			res.send("username already taken");
         }
          passport.authenticate("local")(req, res, function(){
 		//	 res.send("successfully registered");
-		console.log(errors)
-		res.render('signup',{errors:errors}) 
+              res.redirect("/"); 
         });
 	});
 }else{
-	errors.push("Password confirmation does not match password")
-	console.log(errors)
-	res.render('signup',{errors:errors}) 
+	res.redirect('/register') 
 }
-
-		
 });
 
 // show login form
