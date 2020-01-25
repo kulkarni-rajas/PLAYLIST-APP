@@ -29,6 +29,10 @@
 						<form action=/playsong/<%=Playlist._id %>/<%=song._id %> method="GET">
 							<input class="btn btn-outline-success my-2 my-sm-0" role="button" type="submit" value="play">
 						</form>
+						<br>
+						<form action="delsong/<%=Playlist._id %>/<%=song._id %>_method=DELETE"  method="POST">	
+							<input class="btn btn-outline-danger" role="button" type="submit" value="DELETE">
+						</form>
                     </div>
                 </div>
             </div>
