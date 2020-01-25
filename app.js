@@ -20,7 +20,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride("_method"))
 app.use(flash());
 
-const port = 3012
+const port = 30903
 
 
 // connecting to monggose server
@@ -390,7 +390,13 @@ app.post("/register", function(req, res){
          passport.authenticate("local")(req, res, function(){
 		//	 res.send("successfully registered");
 		console.log(errors)
-		res.render('signup',{errors:errors}) 
+		
+		if(errors.lenght)
+		{
+			res.render('signup',{errors:errors}) 
+		}else{
+			res.render('landing')
+		}
         });
 	});
 }else{
