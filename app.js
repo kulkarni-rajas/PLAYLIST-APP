@@ -310,34 +310,51 @@ app.post("/delsong/:ida/:idb",function(req,res){
 	var ida= req.params.ida;
 	var idb= req.params.idb;
 	var playbuf=[];
-		PlaylistSC.findById(req.params.ida,function(err,foundPly){
+	
+		PlaylistSC.findById(ida,function(err,foundPly){
 		if(err){
 			console.log(err);
 		}
 		else{
-			  console.log(foundPly);
-			  		playbuf=[];
-					foundPly.playlist.forEach(function(foundSong){
-					if(foundSong._id!=idb){
-					  console.log(foundSong);
-						playbuf.push(foundSong);
+						var a;
+					 
+					  for(i=0; i<foundPly.playlist.length; i++ )
+						{ if(foundPly.playlist[i]._id==idb)
+							a=i;
+						}
 
-					}
+						playbuf= foundPly.playlist;
+						playbuf.splice(a,1);
+
+						console.log("grsabbbbbbbbbbbbbbbbbbbbbb");
+						playbuf.forEach(function(song){
+							console.log(song);
+						});
+						
 					
+				}
+
+			
+				
+ 
+
 					
 
 			 });
 
 			 
-		}
+		
 
-	});
+	
 
-	PlaylistSC.findByIdAndUpdate(ida,{playlist:playbuf},(error,res)=>{
+			 var playbuf1 = JSON.parse(playbuf);
+
+	PlaylistSC.findByIdAndUpdate(ida,{playlist:playbuf1},(error,res)=>{
 		console.log("The playlist has been updated.")
 	})
 
 	res.redirect('/playlist/'+ida);
+	
 
 });
 

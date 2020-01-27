@@ -1,4 +1,5 @@
 <% include partials/header %>
+
 <link href="css/login.css" rel="stylesheet" type="text/css">
 
 
@@ -13,7 +14,7 @@
 
 <div class = "audio-player-cont">
 	<div class='logo'>
-	<img id = "thumb"  />
+	<img id = "thumb" src="images/nothing.png" style="height:130px; width:130px; border:5px;" />
 </div>
 <div class = "player">
 	<div id ="songTitle" class = "song-title"> My Song title will go here</div>
@@ -40,26 +41,24 @@
 
 
 
+
+
 <div class="container">
 
 	<h2><%=Playlist.name%></h2>
 
 
+    <% Playlist.playlist.forEach(function(song) { %>
+        <img id="songaudio" src="clearspace.gif"  style="height:0px; width:0px; border:0px;" data-link1 = <%=song["audio"]%>>
+        <img id="songname" src="clearspace.gif"  style="height:0px; width:0px; border:0px;" data-link2 = <%=song["name"]%>>
+        <img id="songimage" src="clearspace.gif"  style="height:0px; width:0px; border:0px;" data-link3 = <%=song["image"]%>>
 
+        <%});%>
 	
-    
+
     <div class="row row-cols-1 row-cols-md-3">
-        
-        <%var songa=[];%>
-        <%var songn = [];%>
-        <%var songimg=[]; %>
-    
-        <% var count = 0;%>
         <% Playlist.playlist.forEach(function(song) { %>
-            <% songa[count]= song["audio"]; %>
-            <% songn[count]= song["name"]; %>
-            <% songimg[count]= song["image"]; %>
-            <% count++; %>
+            
             <div class="col mb-4">
                 <div class="card-transparent h-100">
                     <img src="<%=song["image"] %>" class="card-img-top" alt="...">
@@ -76,34 +75,36 @@
                     </div>
                 </div>
             </div>
-            
         <% }) %>
     </div>
 </div>
-
-
-
-
-
+//
 <script>
-
- 
-
+    var currentSong = 0;
     var songaud=[];
+    var playlist1;
     var songname=[];
     var songimg=[];
-    var currentSong = 0;
-    // i'm being unable to access the aforementioned songa , songn and songimg arrays
-    var currentSong = 0;
     
-  
+    $( "#songaudio" ).ready(function(){
+        const div2 = document.getElementById('songaudio');
+
+        songaud[currentSong]= div2.dataset.link1;});
 
 
-    songaud.forEach(function(a){
-        console.log(a);
-    });
-    
-    currentSong=0;
+        $( "#songname" ).ready(function(){
+        const div2 = document.getElementById('songname');
+
+        songname[currentSong]= div2.dataset.link2;});
+
+        $( "#songimage" ).ready(function(){
+        const div2 = document.getElementById('songimage');
+
+        songimg[currentSong]= div2.dataset.link3;});
+
+    currentSong = 0;
+
+
     
     var songTitle = document.getElementById('songTitle');
     var songSlider = document.getElementById('songSlider');
@@ -111,34 +112,27 @@
     var duration = document.getElementById('duration');
     var volumeSlider = document.getElementById('volumeSlider');
     var nextSongTitle = document.getElementById('nextSongTitle');
-    var thumb = document.getElementById('imageBox');
-;
+    var thumb = document.getElementById('thumb');
+
     
     var song;
     
     window.onload = loadSong;
     
     function playCurrent(){
-        for( i =0; i< songaud.length; i++)
-        {
-            if(audio1.equals(songaud[i])){
-                    currentSong = i;
-            }
-    
-    
-        }
+        
     
         loadSong();
     }
     
     function loadSong(){
         song=new Audio(songaud[currentSong]);
-        
         songTitle.textContent = songname[currentSong];
         thumb.src = songimg[currentSong];
-        nextSongTitle.innerHTML = "<b>Next Song: </b>" + songname[currrentSong + 1 % songaud.length];
+        nextSongTitle.innerHTML = "<b>Next Song: </b>" + songname[currentSong + 1 % songaud.length];
         song.playbackRate=1;
         song.volume = volumeSlider.value;
+        showDuration();
         song.play();
     }
     
@@ -163,6 +157,7 @@
     
     function showDuration(){
         var d = Math.floor(song.duration);
+        console.log(d);
         songSlider.setAttribute("max", d);
         duration.textContent = convertTime(d);
     }
@@ -211,7 +206,9 @@
     
     
     </script>
+
     
   
 
 <% include partials/footer %>
+
