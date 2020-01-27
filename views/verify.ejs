@@ -1,0 +1,59 @@
+<% include ./partials/header %> 
+<link href="css/login.css" rel="stylesheet" type="text/css">
+
+<div class="container">
+<% if(verifyMessages) {%>
+    <% verifyMessages.forEach((message)=>{ %>
+          <div class="alert alert-secondary alert-dismissible alert-delete">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <p style="text-align: center;"><strong>Alert:</strong> <%= message %></p>
+          </div>
+      <%})%>
+<%}%>
+
+<%if(alertMessages){%>
+    <% alertMessages.forEach((message)=>{ %>
+          <div class="alert alert-danger alert-dismissible alert-delete">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <p style="text-align: center;"><strong>Error:</strong> <%= message %></p>
+          </div>
+      <%})%>
+<%}%>
+
+</div>
+
+<script>
+
+setTimeout(function(){
+        $(".alert-delete").remove();
+    }, 4000 ); // 5 secs
+
+</script>
+
+<div class="container">
+  <div class="alert alert-success">
+    <h1 id="n" style="text-align: center;">Verify Your Email</h1>
+  </div>
+
+<div class="login-page">
+    <div class="form">
+      <form action="/verify" method="POST">
+
+        <label>A code has been sent to your email . Please enter the verification code </label>
+        <input type="text" placeholder="Enter the code" name="SecretToken">
+        <input class="btn btn-outline-success my-2 my-sm-0" role="button" type="submit" value="Enter!!">
+        
+      </form>
+      <br>
+      <form action="/verify-again" method="POST">
+
+        <label>Still haven't recieved?</label>
+        <input class="btn btn-outline-success my-2 my-sm-0" role="button" type="submit" value="Click here to send again!">
+        
+      </form>
+      
+    </div>
+  </div>
+</div>
+
+<% include ./partials/footer %> 

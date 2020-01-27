@@ -1,7 +1,8 @@
 var express     = require('express'),  
     bodyParser  = require('body-parser'),  
     mongodb     = require('mongodb'),  
-    MongoClient = mongodb.MongoClient,
+	MongoClient = mongodb.MongoClient,
+	ObjectID    = mongodb.ObjectID,
     passport    = require("passport"),
     LocalStrategy = require("passport-local"),
 	passportLocalMongoose = require("passport-local-mongoose"),
@@ -11,6 +12,10 @@ var express     = require('express'),
 	app         = express(),  
 	flash       = require('connect-flash'),
 	result,song,obj2,empty=null; 
+	GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+	randomstring  = require('randomstring')
+	mailer = require('./misc/mailer')
+	validator = require('validator')
 
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/public')); 
@@ -29,7 +34,10 @@ mongoose.connect("mongodb://localhost/playlist_app",{ useNewUrlParser: true,useU
 // passport authentication setup
 var UserSchema = new mongoose.Schema({
     username: String,
-    password: String
+	password: String,
+	email: String,
+	Token: String,
+    verified : { type:Boolean, default: false }
 });
 
 UserSchema.plugin(passportLocalMongoose)
@@ -85,11 +93,69 @@ var songSchema = new mongoose.Schema({
 
 var Song = mongoose.model("Song", songSchema);
 
+var GOOGLE_CLIENT_ID = "955601813281-4f6f7me6du47d1sl5e9vo5v3rn19q207.apps.googleusercontent.com"
+var GOOGLE_CLIENT_SECRET = "SdoGeStKQo2QUBki8gvv001q"
+
+
+passport.use(new GoogleStrategy({
+	clientID: GOOGLE_CLIENT_ID,
+	clientSecret: GOOGLE_CLIENT_ID,
+	callbackURL: "http://localhost:3000/auth/google/callback"
+  },
+  function(accessToken, refreshToken, profile, done) {
+		process.nextTick(function(){
+			console.log(9)
+			User.findOne({ username : profile.emails[0].value}, function(err, user){
+				if(err)
+					return done(err);
+				if(user)
+					{
+						
+					return done(null, user);
+						}
+				else {
+					console.log(9);
+					var newUser = new User();
+					console.log(profile);
+					newUser.username = profile.emails[0].value;
+					newUser.save(function(err){
+						if(err)
+							throw err;
+						return done(null, newUser);
+					})
+					
+				}
+			});
+		});
+	}
+
+));
+
+
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile','email'] }),
+    (req,res)=>{
+        console.log(12)
+	});
+
+
+  
+app.get('/auth/google/callback', 
+  passport.authenticate('google', { failureRedirect: '/login' }),
+  function(req, res) {
+    res.redirect('/');
+  });
+
 
 app.get("/", function(req, res){
-	console.log("back1")
+	console.log(req.user)
+	if(req.user && req.user.verified == false)
+	{
+		req.flash('verify', `An email has been sent to ${req.user.email}.Please verify your account.`);
+        res.redirect("/verify")
+	}else{
 	res.redirect("/back");
-
+	}
 });
 
 app.post("/list",function(req,res){
@@ -138,6 +204,12 @@ app.post("/list",function(req,res){
 
 app.get("/list_view",function(req,res){
 	
+	if(req.user && req.user.verified == false)
+	{
+		req.flash('verify', `An email has been sent to ${req.user.email}.Please verify your account.`);
+        res.redirect("/verify")
+	}else{
+		
 	Song.find({}, function(err, songs){
 			if(err){
 				console.log("ERROR!");
@@ -146,7 +218,7 @@ app.get("/list_view",function(req,res){
 				res.render("list",{Song: songs});
 			}
 		});
-	
+	}
 });
 
 	app.get("/addplaylist/:id",isLoggedIn,function(req,res){
@@ -228,7 +300,12 @@ app.get("/showplay/:ida/:idb",function(req,res){
 		
  	});
 app.get("/playlist",isLoggedIn,function(req,res){
-		PlaylistSC.find({}, function(err, playlists){
+		
+	if(req.user && req.user.verified == false)
+	{   req.flash('verify', `An email has been sent to ${req.user.email} . Please verify your account.`);
+        res.redirect("/verify")
+	}else{
+	PlaylistSC.find({}, function(err, playlists){
 		if(err){
 			console.log("ERROR!");
 			console.log(err);
@@ -238,7 +315,7 @@ app.get("/playlist",isLoggedIn,function(req,res){
 			res.render("playlist_view",{playlists: playlists,user:req.user.username});
 		}
 	});
-	
+    }
 });
 
 app.get("/playlist/:id",function(req,res){
@@ -330,7 +407,7 @@ app.delete("/playlist/:id",function(req,res){
 // });
 
 app.get("/back",(req,res)=>{
-	res.render("landing");
+	res.render("landing",{successMessages : req.flash('success')});
 })
 
 app.post("/back",function(req,res){
@@ -351,43 +428,145 @@ app.post("/delete/:id",function(req,res){
 
 
 app.get("/register", function(req, res){
-   res.render("signup"); 
+	res.render("signup", { alertMessages : req.flash('error') } )
 });
 //handle sign up logic
-app.post("/register", function(req, res){
-	console.log(4,req.body)
-	const{password,confirmPassword}=req.body
+app.post("/register",async (req, res) =>{
 	
+	console.log(4,req.body)
+	const{password,confirmPassword,email}=req.body
+	
+	if(!validator.isEmail(email))
+	{
+		req.flash('error','Invalid Email')
+		return res.redirect('/register')
+	}
+	console.log("The email is correct")
 	if(password===confirmPassword)
 	{
-    var newUser = new User({username: req.body.username});
+		const token = randomstring.generate()
+		console.log(token)
+	
+	var newUser = new User({username:req.body.username,Token:token,email:email})
     User.register(newUser, req.body.password, function(err, user){
         if(err){
-            console.log(err);
-            //return res.render("signup");
-			res.send("username already taken");
+            console.log(err.message);
+			//return res.render("signup");
+			req.flash('error',err.message)
+			res.redirect("/register");
         }
-         passport.authenticate("local")(req, res, function(){
+         passport.authenticate("local")(req, res, async function(){
 		//	 res.send("successfully registered");
-              res.redirect("/"); 
-        });
+			  console.log(user)
+			  const html = `Hi there,
+                 <br/>
+                     Thank you for registering!
+                          <br/><br/>
+                          Please verify your email by typing the following token:
+                               <br/>
+                        Token: <b>${token}</b>
+                        <br/>
+                        On the following page:
+                        <a href="http://localhost:${port}/verify">http://localhost:${port}/verify</a>
+                         <br/><br/>
+                           Have a pleasant day.` 
+
+      // Send email
+      await mailer.sendEmail('admin@playpal.com', email, 'Please verify your email!', html);
+
+      req.flash('verify', `An email has been sent to ${email}.Please verify your account.`);
+	  res.redirect('/verify');
+	  
+		});
 	});
 }else{
+	req.flash('error','The passwords do not match!')
 	res.redirect('/register') 
 }
+
+
 });
 
 // show login form
 app.get("/login",registerLOG, function(req, res){
-   res.render("login"); 
+   
+	
+   res.render("login",{successMessages:req.flash('success')}); 
 });
+
+
+app.get('/verify',(req,res)=>{
+		 
+	   const errors = req.flash("error")
+	   console.log(32,errors)
+       res.render("verify", { alertMessages : errors , verifyMessages : req.flash("verify") } )
+});
+
+app.post('/verify',async (req,res)=>{
+   const secretToken = req.body.SecretToken.trim();
+   console.log(req.body)
+   console.log(secretToken)
+   try{
+	                                     
+	const user = await User.findOne({'Token' : secretToken})
+	console.log(user)
+	
+   if(!user)
+   {  console.log("User not found")
+	   req.flash('error','Incorrect verfication code')
+	  res.redirect('/verify')
+	  return;
+
+   }	 
+
+   console.log("User found") 
+   user.verified = true;
+   user.Token = 'The_Token_Has_Been_Verified';
+   await user.save();
+
+   req.flash('success','Your Verification is now Complete ! Now you can accesss the site :)')
+   res.redirect('/');
+
+}
+ catch(e){
+	 console.log(e)
+ }
+
+
+});
+
+app.post('/verify-again',async (req,res)=>{
+	
+	 const user = req.user
+	 const html = `Hi there,
+                 <br/>
+                     Thank you for registering!
+                          <br/><br/>
+                          Please verify your email by typing the following token:
+                               <br/>
+                        Token: <b>${user.Token}</b>
+                        <br/>
+                        On the following page:
+                        <a href="http://localhost:${port}/verify">http://localhost:${port}/verify</a>
+                         <br/><br/>
+                           Have a pleasant day.` 
+
+      // Send email
+      await mailer.sendEmail('admin@playpal.com', user.email, 'Playpal Email Verification!', html);
+
+      req.flash('verify', `An email has been sent to ${user.email}.Please verify your account.`);
+	  res.redirect('/verify');
+ 
+ });
+
 // handling login logic
 app.post("/login", passport.authenticate("local", 
     {
         successRedirect: "/list_view",
         failureRedirect: "/login",
 	    failureFlash: 'Invalid username or password.'
-    }), function(req, res){
+    }), function(req, res){	
+
 });
 
 // logic route
@@ -397,7 +576,9 @@ app.get("/logout", function(req, res){
 });
 
 function isLoggedIn(req, res, next){
-    if(req.isAuthenticated()){
+	console.log(req.isAuthenticated())
+	
+	if(req.isAuthenticated()){
         return next();
     }
     res.redirect("/login");

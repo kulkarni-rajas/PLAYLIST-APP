@@ -1,5 +1,19 @@
 <% include partials/header %>
 <link href="css/login.css" rel="stylesheet" type="text/css">
+
+<div class="container">
+	<% if(successMessages) {%>
+		<% successMessages.forEach((message)=>{ %>
+			  <div class="alert alert-success alert-dismissible alert-delete">
+				<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+				<p style="text-align: center;"><strong>Alert:</strong> <%= message %></p>
+			  </div>
+		  <%})%>
+	<%}%>
+</div>	
+
+
+
 <div class="container">
 	<div class="alert alert-success">
 		<h1 id="n">Search for your song here</h1>
@@ -14,6 +28,7 @@
 		</div>
 	</div>
 	
-</div>
+</
+div>
  
 <% include partials/footer %>
