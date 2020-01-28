@@ -4,19 +4,19 @@ var express     = require('express'),
 	MongoClient = mongodb.MongoClient,
 	ObjectID    = mongodb.ObjectID,
     passport    = require("passport"),
-    LocalStrategy = require("passport-local"),
+    LocalStrategy = require('passport-local').Strategy,
 	passportLocalMongoose = require("passport-local-mongoose"),
     unirest     = require("unirest"),
 	methodOverride= require("method-override"),
 	reqd        = unirest("GET", "https://deezerdevs-deezer.p.rapidapi.com/search"),
 	app         = express(),  
 	flash       = require('connect-flash'),
-	result,song,obj2,empty=null; 
-	GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-	randomstring  = require('randomstring')
-	mailer = require('./misc/mailer')
-	validator = require('validator')
-
+	GoogleStrategy = require('passport-google-oauth').OAuth2Strategy,
+	randomstring  = require('randomstring'),
+	mailer = require('./misc/mailer'),
+	validator = require('validator'),
+	googleSignIn = require('./config/googleSignIn')
+	
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/public')); 
 app.use(bodyParser.json());
@@ -33,11 +33,17 @@ mongoose.connect("mongodb://localhost/playlist_app",{ useNewUrlParser: true,useU
 
 // passport authentication setup
 var UserSchema = new mongoose.Schema({
-    username: String,
+	username: {type:String,index:true,sparse:true},
 	password: String,
 	email: String,
 	Token: String,
-    verified : { type:Boolean, default: false }
+	verified : Boolean,
+	google: {
+	id: String,
+	token: String,
+	email: String,
+	name: String
+	}
 });
 
 UserSchema.plugin(passportLocalMongoose)
@@ -52,9 +58,14 @@ app.use(require("express-session")({
 
 app.use(passport.initialize());
 app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+
+passport.serializeUser(function(user, done) {
+	done(null, user);
+  });
+  
+  passport.deserializeUser(function(user, done) {
+	done(null, user);
+  });
 
 app.use(function(req, res, next){
    res.locals.currentUser = req.user;
@@ -93,37 +104,39 @@ var songSchema = new mongoose.Schema({
 
 var Song = mongoose.model("Song", songSchema);
 
-var GOOGLE_CLIENT_ID = "955601813281-4f6f7me6du47d1sl5e9vo5v3rn19q207.apps.googleusercontent.com"
-var GOOGLE_CLIENT_SECRET = "SdoGeStKQo2QUBki8gvv001q"
 
+
+passport.use(new LocalStrategy(User.authenticate()));
 
 passport.use(new GoogleStrategy({
-	clientID: GOOGLE_CLIENT_ID,
-	clientSecret: GOOGLE_CLIENT_ID,
-	callbackURL: "http://localhost:3000/auth/google/callback"
+	clientID: googleSignIn.GOOGLE_CLIENT_ID,
+	clientSecret: googleSignIn.GOOGLE_CLIENT_SECRET,
+	callbackURL: googleSignIn.GOOGLE_CALLBACKURL
   },
   function(accessToken, refreshToken, profile, done) {
 		process.nextTick(function(){
-			console.log(9)
-			User.findOne({ username : profile.emails[0].value}, function(err, user){
+			console.log("profile")
+			User.findOne({'google.id': profile.id}, function(err, user){
 				if(err)
 					return done(err);
 				if(user)
-					{
-						
 					return done(null, user);
-						}
 				else {
-					console.log(9);
-					var newUser = new User();
-					console.log(profile);
-					newUser.username = profile.emails[0].value;
+					var newUser = new User({
+						google:{
+							id : profile.id,
+					        token : accessToken,
+					        name : profile.displayName,
+					        email : profile.emails[0].value
+						}
+					});
+					
+					console.log("The new User is:",newUser)
 					newUser.save(function(err){
 						if(err)
 							throw err;
 						return done(null, newUser);
 					})
-					
 				}
 			});
 		});
@@ -131,11 +144,9 @@ passport.use(new GoogleStrategy({
 
 ));
 
-
 app.get('/auth/google',
   passport.authenticate('google', { scope: ['profile','email'] }),
     (req,res)=>{
-        console.log(12)
 	});
 
 
@@ -143,19 +154,18 @@ app.get('/auth/google',
 app.get('/auth/google/callback', 
   passport.authenticate('google', { failureRedirect: '/login' }),
   function(req, res) {
-    res.redirect('/');
+	req.flash('success','Successfully signed In,Welcome!!')
+	res.redirect('/');
   });
 
 
+
+
 app.get("/", function(req, res){
-	console.log(req.user)
-	if(req.user && req.user.verified == false)
-	{
-		req.flash('verify', `An email has been sent to ${req.user.email}.Please verify your account.`);
-        res.redirect("/verify")
-	}else{
+	console.log("In the landing page:",req.user)
+	
 	res.redirect("/back");
-	}
+	
 });
 
 app.post("/list",function(req,res){
@@ -223,6 +233,7 @@ app.get("/list_view",function(req,res){
 
 	app.get("/addplaylist/:id",isLoggedIn,function(req,res){
 		var idp=req.params.id;
+		const user = req.user
 		//console.log(req.user.username);
 		//console.log(5,req.user)
 	     PlaylistSC.find({}, function(err, songs){
@@ -232,25 +243,36 @@ app.get("/list_view",function(req,res){
 			} else {
 			//	console.log(typeof songs)
 			//	console.log(songs);
-				res.render("playlist_sc",{playlists: songs,idp:idp,user:req.user.username});
+				if(user.google)
+				{
+					res.render("playlist_sc",{playlists: songs,idp:idp,user:req.user.google.name});
+				}else{
+				   res.render("playlist_sc",{playlists: songs,idp:idp,user:req.user.username});
+				}
 			}
 		});
 	});
 
 app.get("/newplaylist/:id",function(req,res){
 	var idp= req.params.id;
-
+	const user = req.user;
+	if(user.google)
+	{
+	 var auser = user.google.name
+	}else{
+	 var auser = user.username
+	}
 	var name= req.query.plyname;
 	console.log(name);
 //	res.redirect("");
 	PlaylistSC.create({
 	   name:   name,
-	   author: req.user.username,	
+	   author: auser,	
 	}, function(err, asong){
 		if(err){
 			console.log(err);
 		} else {
-			console.log(req.user.username);
+			console.log(auser);
 		}
 	});
 	
@@ -272,6 +294,8 @@ app.get("/showplay/:ida/:idb",function(req,res){
 			}
 			else{
 			   //    console.log(foundPly);
+			 
+				 
 				   Song.findById(req.params.ida,function(err,foundSong){
 					  if(err){
 						console.log(err);
@@ -305,14 +329,24 @@ app.get("/playlist",isLoggedIn,function(req,res){
 	{   req.flash('verify', `An email has been sent to ${req.user.email} . Please verify your account.`);
         res.redirect("/verify")
 	}else{
-	PlaylistSC.find({}, function(err, playlists){
+	
+		PlaylistSC.find({}, function(err, playlists){
 		if(err){
 			console.log("ERROR!");
 			console.log(err);
 		} else {
 		//	console.log(typeof songs)
+			const user = req.user;
+		
+		      if(user.google)
+		      {
+			   var auser = user.google.name
+		      }else{
+			   var auser = user.username
+			  }
+		
 			console.log(playlists);
-			res.render("playlist_view",{playlists: playlists,user:req.user.username});
+			res.render("playlist_view",{playlists: playlists,user:auser});
 		}
 	});
     }
@@ -320,6 +354,13 @@ app.get("/playlist",isLoggedIn,function(req,res){
 
 app.get("/playlist/:id",function(req,res){
 	var id= req.params.id;
+	const user = req.user;
+	if(user.google)
+	{
+	 var auser = user.google.name
+	}else{
+	 var auser = user.username
+	}
 	PlaylistSC.findById( id, function(err, songs){
 		if(err){
 			console.log("ERROR!");
@@ -328,11 +369,11 @@ app.get("/playlist/:id",function(req,res){
 		//	console.log(songs.playlist[0])
 			if(songs.playlist[0]){
 				console.log("yes");
-			res.render("song_view",{Playlist: songs,play:songs.playlist[0]["audio"],user:req.user.username});
+			res.render("song_view",{Playlist: songs,play:songs.playlist[0]["audio"],user:auser});
 			}
 			else{
 				console.log("no");
-				res.render("song_view",{Playlist: songs,play:null,user:req.user.username });
+				res.render("song_view",{Playlist: songs,play:null,user:auser });
 			}
 		}
 	});
@@ -407,6 +448,7 @@ app.delete("/playlist/:id",function(req,res){
 // });
 
 app.get("/back",(req,res)=>{
+	console.log(req.user)
 	res.render("landing",{successMessages : req.flash('success')});
 })
 
@@ -430,6 +472,7 @@ app.post("/delete/:id",function(req,res){
 app.get("/register", function(req, res){
 	res.render("signup", { alertMessages : req.flash('error') } )
 });
+
 //handle sign up logic
 app.post("/register",async (req, res) =>{
 	
@@ -447,10 +490,18 @@ app.post("/register",async (req, res) =>{
 		const token = randomstring.generate()
 		console.log(token)
 	
-	var newUser = new User({username:req.body.username,Token:token,email:email})
-    User.register(newUser, req.body.password, function(err, user){
+	var newUser = new User({
+		username:req.body.username,
+		password:req.body.password,
+		Token:token,
+		email:email,
+		verified:false
+		 
+		})
+		console.log(newUser)
+       User.register(newUser,req.body.password,function(err, user){
         if(err){
-            console.log(err.message);
+            console.log(err);
 			//return res.render("signup");
 			req.flash('error',err.message)
 			res.redirect("/register");
@@ -489,8 +540,7 @@ app.post("/register",async (req, res) =>{
 
 // show login form
 app.get("/login",registerLOG, function(req, res){
-   
-	
+
    res.render("login",{successMessages:req.flash('success')}); 
 });
 
@@ -505,13 +555,12 @@ app.get('/verify',(req,res)=>{
 app.post('/verify',async (req,res)=>{
    const secretToken = req.body.SecretToken.trim();
    console.log(req.body)
-   console.log(secretToken)
+   console.log("The inputted SecretToken is ",secretToken)
    try{
 	                                     
 	const user = await User.findOne({'Token' : secretToken})
-	console.log(user)
-	
-   if(!user)
+   
+	if(!user)
    {  console.log("User not found")
 	   req.flash('error','Incorrect verfication code')
 	  res.redirect('/verify')
@@ -522,10 +571,11 @@ app.post('/verify',async (req,res)=>{
    console.log("User found") 
    user.verified = true;
    user.Token = 'The_Token_Has_Been_Verified';
-   await user.save();
-
-   req.flash('success','Your Verification is now Complete ! Now you can accesss the site :)')
-   res.redirect('/');
+    user.save((err,user)=>{
+        console.log("User Changed",user);
+        req.flash('success','Your Verification is now Complete ! Now you can accesss the site :)')
+        res.redirect('/');
+   });
 
 }
  catch(e){
@@ -561,12 +611,13 @@ app.post('/verify-again',async (req,res)=>{
 
 // handling login logic
 app.post("/login", passport.authenticate("local", 
-    {
-        successRedirect: "/list_view",
-        failureRedirect: "/login",
-	    failureFlash: 'Invalid username or password.'
-    }), function(req, res){	
-
+{
+	successRedirect: "/list_view",
+	failureRedirect: "/login",
+	failureFlash: 'Invalid username or password.'
+}), function(req, res){	
+  console.log(res.flash('error'));
+  console.log("successfully signed In")
 });
 
 // logic route
