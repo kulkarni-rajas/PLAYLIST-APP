@@ -13,7 +13,9 @@ var express     = require('express'),
 	result,song,obj2,empty=null; 
 
 app.set('view engine', 'ejs');
-app.use(express.static(__dirname + '/public')); 
+
+	var path = require('path');
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(methodOverride("_method"))
@@ -272,11 +274,14 @@ app.get("/playlist/:id",function(req,res){
 		//	console.log(songs.playlist[0])
 			if(songs.playlist[0]){
 				console.log("yes");
-			res.render("song_view",{Playlist: songs,play:songs.playlist[0]["audio"],user:req.user.username});
+			
+			res.render("song_view",{Playlist: songs,play:songs.playlist[0]["audio"],user:req.user.username, Songarr : JSON.stringify(songs.playlist)});
 			}
 			else{
 				console.log("no");
-				res.render("song_view",{Playlist: songs,play:null,user:req.user.username });
+		
+				res.render("song_view",{Playlist: songs,play:null,user:req.user.username, Songarr : JSON.stringify(songs.playlist) });
+				
 			}
 		}
 	});

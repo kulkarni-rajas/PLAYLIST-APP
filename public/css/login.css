@@ -62,15 +62,21 @@ body {
 
   .card-body{
     background-color:#d4edda;
+    text-align: center;
   }
   
 .audio-player-cont{
+  position: relative;
+  z-index: 1;
+  margin: 0auto;
+  text-align: center;
   width: 450px;
+  float: center;
   height: 135px;
-  background: #f3ebdc;
+  background:#d4edda;
   box-shadow: 0 0 6px 2px #c7a8a8;
-  color: #003ba9;
-  font-family: verdana;
+  color: rgba(0, 0, 0, 0.479);
+  font-family:"Roboto", sans-serif;
   font-size: 12px;
 }
 .logo{

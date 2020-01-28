@@ -11,28 +11,28 @@
 	</div>
 </div>
 
-
+<br>
 <div class = "audio-player-cont">
 	<div class='logo'>
-	<img id = "thumb" src="images/nothing.png" style="height:130px; width:130px; border:5px;" />
+	<img id = "thumb" src="images/nothing.png" style="height:137px; width:130px; border:0px;" />
 </div>
 <div class = "player">
 	<div id ="songTitle" class = "song-title"> My Song title will go here</div>
-	<input id="songSlider" class="song-slider" type="range" min="0" step="1" onchange= "seekSong()" />
+	<input id="songSlider" class="song-slider" type="range" min="0"  step="1" onchange= "seekSong()" />
 	<div>
 		<div id= "currentTime" class= "current-time"> 00::00</div>
 		<div id= "duration" class= "duration"> 00::00</div>
 
 	</div>
 	<div class="controllers">
-		<img src = "images/previous.png" width ="30px" onclick= "previous();" />
-		<img src = "images/backward.png" width ="30px" onclick= "decreasePlaybackRate();" />
-		<img src = "images/play.png" width ="30px" onclick= "playOrPauseSong();" />
-		<img src = "images/forward.png" width ="30px" onclick= "increasePlaybackRate();" />
-		<img src = "images/next.png" width ="30px" onclick= "next();" />
-		<img src = "images/volume-down.png" width ="15px" />
-		<input id = "volumeSlider" class="volume-slider" type = "range" min="0" max="1" step="0.01" onchange="adjustVolume();" />
-		<img src = "images/volume-up.png" width ="15px" style="margin-left: 2px" />
+		<img src = "../images/previous.png" width ="30px" onclick= "previous();" />
+		<img src = "../images/backward.png" width ="30px" onclick= "decreasePlaybackRate();" />
+		<img id="a" src = "../images/play.png" width ="30px" onclick= "playOrPauseSong();" />
+		<img src = "../images/forward.png" width ="30px" onclick= "increasePlaybackRate();" />
+		<img src = "../images/next.png" width ="30px" onclick= "next();" />
+		
+		<input id = "volumeSlider" class="volume-slider" type = "range" min="0" max="1" step="0.1" onchange="adjustVolume();" />
+		
 	</div>
 	<div id="nextSongTitle" class="song-title"><b>Next Song: </b>Next Song Title goes here</div>
 </div>
@@ -46,14 +46,9 @@
 <div class="container">
 
 	<h2><%=Playlist.name%></h2>
+    <img id="Playlist" src="clearspace.gif"  style="height:0px; width:0px; border:0px;" data-link = "<%=Songarr%>">
 
-
-    <% Playlist.playlist.forEach(function(song) { %>
-        <img id="songaudio" src="clearspace.gif"  style="height:0px; width:0px; border:0px;" data-link1 = <%=song["audio"]%>>
-        <img id="songname" src="clearspace.gif"  style="height:0px; width:0px; border:0px;" data-link2 = <%=song["name"]%>>
-        <img id="songimage" src="clearspace.gif"  style="height:0px; width:0px; border:0px;" data-link3 = <%=song["image"]%>>
-
-        <%});%>
+   
 	
 
     <div class="row row-cols-1 row-cols-md-3">
@@ -82,25 +77,28 @@
 <script>
     var currentSong = 0;
     var songaud=[];
-    var playlist1;
+    var playlist1=[];
     var songname=[];
     var songimg=[];
+    var playlist2=[];
     
-    $( "#songaudio" ).ready(function(){
-        const div2 = document.getElementById('songaudio');
 
-        songaud[currentSong]= div2.dataset.link1;});
+    var div2 = document.getElementById('Playlist');
+    playlist2= div2.dataset.link;
+    
+    playlist1= JSON.parse(playlist2);
+    console.log(playlist1);
+
+    playlist1.forEach(function(song){
+        songaud[currentSong]= song["audio"];
+        songname[currentSong]= song["name"];
+        songimg[currentSong]= song["image"];
+        currentSong++;
+    });
 
 
-        $( "#songname" ).ready(function(){
-        const div2 = document.getElementById('songname');
 
-        songname[currentSong]= div2.dataset.link2;});
 
-        $( "#songimage" ).ready(function(){
-        const div2 = document.getElementById('songimage');
-
-        songimg[currentSong]= div2.dataset.link3;});
 
     currentSong = 0;
 
@@ -109,10 +107,11 @@
     var songTitle = document.getElementById('songTitle');
     var songSlider = document.getElementById('songSlider');
     var currentTime = document.getElementById('currentTime');
-    var duration = document.getElementById('duration');
+    var duration3 = document.getElementById('duration');
     var volumeSlider = document.getElementById('volumeSlider');
     var nextSongTitle = document.getElementById('nextSongTitle');
     var thumb = document.getElementById('thumb');
+    var img = document.getElementById('a');
 
     
     var song;
@@ -129,6 +128,9 @@
         song=new Audio(songaud[currentSong]);
         songTitle.textContent = songname[currentSong];
         thumb.src = songimg[currentSong];
+        if(currentSong===songaud.length-1)
+        nextSongTitle.innerHTML = "<b>Next Song: </b>" + songname[0];
+        else
         nextSongTitle.innerHTML = "<b>Next Song: </b>" + songname[currentSong + 1 % songaud.length];
         song.playbackRate=1;
         song.volume = volumeSlider.value;
@@ -137,11 +139,15 @@
     }
     
     setInterval(updateSongSlider, 1000);
+
+    
+
     
     function updateSongSlider(){
         var c = Math.round(song.currentTime);
         songSlider.value = c;
         currentTime.textContent = convertTime(c);
+        showDuration();
         if(song.ended){
             next();
         }
@@ -156,33 +162,40 @@
     }
     
     function showDuration(){
+        console.log(song.duration);
         var d = Math.floor(song.duration);
         console.log(d);
-        songSlider.setAttribute("max", d);
-        duration.textContent = convertTime(d);
+        songSlider.max = d;
+        duration3.textContent = convertTime(d);
     }
     
     function playOrPauseSong(img){
         song.playbackRate=1;
         if(song.paused){
             song.play();
-            img.src="images/pause.png";
+            img.src= "../images/pause.png";
          }
          else{
              song.pause();
-            img.src="images/play.png";
+            img.src="../images/play.png";
          }
     }
     
     
     function next(){
+        song.pause();
         currentSong = currentSong + 1 % songaud.length;
+        if(currentSong===songaud.length)
+            currentSong = 0;
         loadSong();
     }
     
     function previous(){
+        song.pause();
         currentSong--;
         currentSong = (currentSong < 0) ? songaud.length -1 : currentSong;
+        if(currentSong<0)
+            currentSong = songaud.length-1;
         loadSong();
     }
     function seekSong(){
