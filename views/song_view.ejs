@@ -25,11 +25,11 @@
 
 	</div>
 	<div class="controllers">
-		<img src = "../images/previous.png" width ="30px" onclick= "previous();" />
-		<img src = "../images/backward.png" width ="30px" onclick= "decreasePlaybackRate();" />
-		<img id="a" src = "../images/play.png" width ="30px" onclick= "playOrPauseSong();" />
-		<img src = "../images/forward.png" width ="30px" onclick= "increasePlaybackRate();" />
-		<img src = "../images/next.png" width ="30px" onclick= "next();" />
+		<img src = "/images/previous.png" width ="30px" onclick= "previous();" />
+		<img src = "/images/backward.png" width ="30px" onclick= "decreasePlaybackRate();" />
+		<img id="a" src = "/images/pause.png" width ="30px" onclick= "playOrPauseSong();" />
+		<img src = "/images/forward.png" width ="30px" onclick= "increasePlaybackRate();" />
+		<img src = "/images/next.png" width ="30px" onclick= "next();" />
 		
 		<input id = "volumeSlider" class="volume-slider" type = "range" min="0" max="1" step="0.1" onchange="adjustVolume();" />
 		
@@ -59,10 +59,10 @@
                     <img src="<%=song["image"] %>" class="card-img-top" alt="...">
                     <div class="card-body">
 						<h4 class="card-title"><strong><%= song["name"] %></strong></h4>
-						<p class="card-text"><%=song["artist"]%></p>
-						<form action=/playsong/<%=Playlist._id %>/<%=song._id %> method="GET">
-							<input class="btn btn-outline-success my-2 my-sm-0" role="button" type="submit" value="play">
-						</form>
+                        <p class="card-text"><%=song["artist"]%></p>
+                        
+						<input class="btn btn-outline-success my-2 my-sm-0" role="button" type="submit" value="play" >
+						
 						<br>
 						<form action="delsong/<%=Playlist._id %>/<%=song._id %>_method=DELETE"  method="POST">	
 							<input class="btn btn-outline-danger" role="button" type="submit" value="DELETE">
@@ -118,11 +118,7 @@
     
     window.onload = loadSong;
     
-    function playCurrent(){
-        
     
-        loadSong();
-    }
     
     function loadSong(){
         song=new Audio(songaud[currentSong]);
@@ -169,15 +165,15 @@
         duration3.textContent = convertTime(d);
     }
     
-    function playOrPauseSong(img){
+    function playOrPauseSong(){
         song.playbackRate=1;
         if(song.paused){
             song.play();
-            img.src= "../images/pause.png";
+            img.src= "/images/pause.png";
          }
          else{
              song.pause();
-            img.src="../images/play.png";
+            img.src="/images/play.png";
          }
     }
     
