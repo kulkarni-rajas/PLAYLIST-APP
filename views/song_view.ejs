@@ -61,8 +61,8 @@
 						<h4 class="card-title"><strong><%= song["name"] %></strong></h4>
                         <p class="card-text"><%=song["artist"]%></p>
                         
-						<input class="btn btn-outline-success my-2 my-sm-0" role="button" type="submit" value="play" >
-						
+						<input class="btn btn-outline-success my-2 my-sm-0" role="button" type="submit" value="play" onclick= "playcurrent(JSON.stringify(this.id));" id= "<%=song._id%>">
+						<br>
 						<br>
 						<form action="delsong/<%=Playlist._id %>/<%=song._id %>_method=DELETE"  method="POST">	
 							<input class="btn btn-outline-danger" role="button" type="submit" value="DELETE">
@@ -185,6 +185,19 @@
             currentSong = 0;
         loadSong();
     }
+
+    function playcurrent(ida){
+        var countbuf = 0;
+        playlist1.forEach(function(song1){
+            if(song1._id==JSON.parse(ida)){
+                currentSong=countbuf;
+            }
+            countbuf++
+    });
+
+        song.pause();
+        loadSong();
+    }
     
     function previous(){
         song.pause();
@@ -220,4 +233,3 @@
   
 
 <% include partials/footer %>
-

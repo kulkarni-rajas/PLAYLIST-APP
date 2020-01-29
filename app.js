@@ -275,12 +275,12 @@ app.get("/playlist/:id",function(req,res){
 			if(songs.playlist[0]){
 				console.log("yes");
 			
-			res.render("song_view",{Playlist: songs,play:songs.playlist[0]["audio"],user:req.user.username, Songarr : JSON.stringify(songs.playlist)});
+			res.render("song_view",{Playlist: songs, play:0 ,user:req.user.username, Songarr : JSON.stringify(songs.playlist)});
 			}
 			else{
 				console.log("no");
 		
-				res.render("song_view",{Playlist: songs,play:null,user:req.user.username, Songarr : JSON.stringify(songs.playlist) });
+				res.render("song_view",{Playlist: songs, play:0 ,user:req.user.username, Songarr : JSON.stringify(songs.playlist) });
 				
 			}
 		}
@@ -288,26 +288,7 @@ app.get("/playlist/:id",function(req,res){
 	
 });
 
-app.get("/playsong/:ida/:idb",function(req,res){
-	//console.log(req.params.idx)
-	var ida= req.params.ida;
-	var idb= req.params.idb;
-		PlaylistSC.findById(req.params.ida,function(err,foundPly){
-		if(err){
-			console.log(err);
-		}
-		else{
-		      console.log(foundPly);
-					foundPly.playlist.forEach(function(foundSong){
-					if(foundSong._id==idb){
-					  console.log(foundSong);
-					  return res.render("song_view",{Playlist: foundPly,play:foundSong["audio"]});
-					}
 
-			 });
-		}
-	});
-});
 
 
 app.post("/delsong/:ida/:idb",function(req,res){
