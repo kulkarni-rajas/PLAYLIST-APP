@@ -2,6 +2,18 @@
 <link href="css/login.css" rel="stylesheet" type="text/css">
 
 <div class="container">
+	<% if(successMessages) {%>
+		<% successMessages.forEach((message)=>{ %>
+			  <div class="alert alert-success alert-dismissible alert-delete">
+				<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+				<p style="text-align: center;"><strong>Success:</strong> <%= message %></p>
+			  </div>
+		  <%})%>
+	<%}%>
+</div>	
+
+
+<div class="container">
 	<div class="alert alert-success">
 		<form action="/back" method="POST">
 			<button class="btn btn-outline-success my-2 my-sm-0" role="button" >Search Again!</button>	

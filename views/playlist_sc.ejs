@@ -11,7 +11,7 @@
 			<button class="btn btn-outline-success my-2 my-sm-0" role="button" >Search Again!</button>	
 		</form>
 		<br>
-		<form action="/newplaylist/<%=idp%>" method="GET">
+		<form action="/newplaylist/<%=search%>/<%=idp%>" method="GET">
 			<input type="text" placeholder="Name of Playlist" name="plyname">
 			<input value="Create Playlist" class="btn btn-outline-success my-2 my-sm-0" role="button" type="submit">
 		</form>
@@ -28,7 +28,7 @@
                     <div class="card-body">
                     <h4 class="card-title"><strong><%= song["name"] %></strong></h4>
 					<!-- <h5><strong>Created by-</strong><%=song["author"]%></h5>	 -->
-                    <form action="/showplay/<%=idp%>/<%=song._id%>" method="GET">
+					<form action="/showplay/<%=search%>/<%=idp%>/<%=song._id%>" method="POST">
 						<input class="btn btn-outline-success my-2 my-sm-0" role="button" type="submit" value="ADD">
 					  </form>
                     </div>

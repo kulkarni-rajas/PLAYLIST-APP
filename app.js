@@ -231,8 +231,9 @@ app.get("/list_view",function(req,res){
 	}
 });
 
-	app.get("/addplaylist/:id",isLoggedIn,function(req,res){
+app.get("/addplaylist/:search/:id",isLoggedIn,function(req,res){
 		var idp=req.params.id;
+		const search = req.params.search;
 		const user = req.user
 		//console.log(req.user.username);
 		//console.log(5,req.user)
@@ -245,15 +246,15 @@ app.get("/list_view",function(req,res){
 			//	console.log(songs);
 				if(user.google)
 				{
-					res.render("playlist_sc",{playlists: songs,idp:idp,user:req.user.google.name});
+					res.render("playlist_sc",{playlists: songs,idp:idp,user:req.user.google.name, search: search});
 				}else{
-				   res.render("playlist_sc",{playlists: songs,idp:idp,user:req.user.username});
+				   res.render("playlist_sc",{playlists: songs,idp:idp,user:req.user.username , search: search});
 				}
 			}
 		});
 	});
 
-app.get("/newplaylist/:id",function(req,res){
+app.get("/newplaylist/:search/:id",function(req,res){
 	var idp= req.params.id;
 	const user = req.user;
 	if(user.google)
@@ -276,53 +277,73 @@ app.get("/newplaylist/:id",function(req,res){
 		}
 	});
 	
-	res.redirect("/addplaylist/"+idp);
+	res.redirect("/addplaylist/"+req.params.search+"/"+idp);
 	
 });
 
 	
-app.get("/showplay/:ida/:idb",function(req,res){
+app.post("/showplay/:search/:ida/:idb", (req,res)=>{
 
-		console.log(req.params.ida);
-	    console.log(req.params.idb);
+		
+		const ida = req.params.ida;
 	    var plyid=req.params.idb;
-	
-		
-		PlaylistSC.findById(req.params.idb,function(err,foundPly){
+	    var search = req.params.search;
+		console.log(1,req.params.ida);
+		console.log(2,req.params.idb);
+		console.log(3,search)
+		PlaylistSC.findById(req.params.idb,async (err,foundPly)=>{
 			if(err){
-				console.log(err);
+				return console.log(err);
 			}
-			else{
+			
 			   //    console.log(foundPly);
-			 
-				 
-				   Song.findById(req.params.ida,function(err,foundSong){
-					  if(err){
-						console.log(err);
-					   }
-					  else{
-						  console.log(foundSong);
-						  var currply=foundPly;
-						  currply.playlist.push({
-							 name:   foundSong["name"],
-							 artist: foundSong["artist"],
-							 audio:  foundSong["audio"],
-							 image:  foundSong["image"] 
+			   var req = unirest("GET", "https://deezerdevs-deezer.p.rapidapi.com/search");
 
-						});
-						  currply.save();
-					  }
-			
-		          });
-			
-			}
-			console.log(foundPly)
+			   req.query({
+				   "q": search
+			   });
+			   
+			   req.headers({
+				   "x-rapidapi-host": "deezerdevs-deezer.p.rapidapi.com",
+				   "x-rapidapi-key": "69fccf299amshb6e2f8cee3e4649p1e45f5jsn8ba7016e3003"
+			   });
+			   
+			   
+			   req.end(async (res) => {
+				   if (res.error) 
+				   throw new Error(res.error);
+
+				   var data = res.body.data;
+
+			       for(var i=0;i<data.length;i++){
+					console.log(4,data[i].id)
+					console.log(5,ida)
+					if(data[i].id == ida)
+					{
+						 console.log("found")
+						 var currply=foundPly;
+						  currply.playlist.push({ 
+							name:   data[i].title,
+							artist: data[i].artist.name,
+							audio:  data[i].preview,
+							image:  data[i].album.cover_medium 
+
+					   });
+					   await currply.save();
+					 
+					  break;
+					}
+				}
+			   });
+			console.log(6,foundPly)
 		});
+		req.flash('success','The song was added in the playlist.:)')
+		res.redirect("/playlist/"+plyid);
+		
+		
+});
 	 
-	res.redirect("/playlist/"+plyid);
-		
-		
- 	});
+
 app.get("/playlist",isLoggedIn,function(req,res){
 		
 	if(req.user && req.user.verified == false)
@@ -369,11 +390,11 @@ app.get("/playlist/:id",function(req,res){
 		//	console.log(songs.playlist[0])
 			if(songs.playlist[0]){
 				console.log("yes");
-			res.render("song_view",{Playlist: songs,play:songs.playlist[0]["audio"],user:auser});
+			res.render("song_view",{Playlist: songs,play:songs.playlist[0]["audio"],user:auser,successMessages:req.flash('success')});
 			}
 			else{
 				console.log("no");
-				res.render("song_view",{Playlist: songs,play:null,user:auser });
+				res.render("song_view",{Playlist: songs,play:null,user:auser,successMessages:req.flash('success') });
 			}
 		}
 	});
@@ -612,7 +633,7 @@ app.post('/verify-again',async (req,res)=>{
 // handling login logic
 app.post("/login", passport.authenticate("local", 
 {
-	successRedirect: "/list_view",
+	successRedirect: "/",
 	failureRedirect: "/login",
 	failureFlash: 'Invalid username or password.'
 }), function(req, res){	
@@ -623,6 +644,7 @@ app.post("/login", passport.authenticate("local",
 // logic route
 app.get("/logout", function(req, res){
    req.logout();
+   req.flash('success','You have successfully logged Out.')
    res.redirect("/login");
 });
 
