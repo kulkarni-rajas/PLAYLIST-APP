@@ -429,7 +429,7 @@ app.post("/register", function(req, res){
 
 // show login form
 app.get("/login",registerLOG, function(req, res){
-   res.render("login"); 
+   res.render("login" , {log : "in"}); 
 });
 // handling login logic
 app.post("/login", passport.authenticate("local", 
@@ -443,7 +443,7 @@ app.post("/login", passport.authenticate("local",
 // logic route
 app.get("/logout", function(req, res){
    req.logout();
-   res.redirect("/login");
+   res.render("login", {log : "out"});
 });
 
 function isLoggedIn(req, res, next){

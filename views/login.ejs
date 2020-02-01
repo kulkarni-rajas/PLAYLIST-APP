@@ -5,8 +5,17 @@
   <div class="alert alert-success">
     <h1 id="n">Login!</h1>
   </div>
+  <br>
+  
+  <div style="background-color: red;
+  padding: 10px;
+  display: none;
+  text-align: center;
+  color: seashell;
+  font-size: large;" id="hiddenBar" data-boolean="<%=log%>">You have been successfully logged out! Click below to login again!</div>
 
 <div class="login-page">
+  
     <div class="form">
       <form action="/login" method="POST">
         <input type="text" name="username" placeholder="username">
@@ -23,5 +32,20 @@
     </div>
   </div>
 </div>
+
+<script>
+var div1 = document.getElementById('hiddenBar');
+
+if(div1.dataset.boolean.localeCompare("out")==0){
+  div1.style.display = 'block'
+  var div2 = document.getElementById('ok');
+  div2.setAttribute('href', "/login");
+  div2.innerHTML="Login";
+  var div3 = document.getElementById('ok2');
+  div3.setAttribute('href', "/register");
+  div3.innerHTML="Sign Up";
+}
+
+</script>
 
 <% include ./partials/footer %> 
