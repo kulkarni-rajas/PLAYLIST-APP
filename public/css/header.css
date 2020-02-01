@@ -1,0 +1,15 @@
+body {
+    background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRU_yM8cHdjq-v1nsbXDKdshnQ8hpVMadNAB5oU2J_cIJnCbT96');
+  }
+  .navbar{
+    min-height:40px;
+}
+.navbar  a {
+    font-size: 20px;
+}
+.container-fluid {
+  padding-left: 50px;
+  padding-right: 50px;
+  padding-top: 30px;
+  padding-bottom : 50px;
+}
