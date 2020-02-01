@@ -162,9 +162,14 @@ app.get('/auth/google/callback',
 
 
 app.get("/", function(req, res){
-	console.log("In the landing page:",req.user)
-	
-	res.redirect("/back");
+	user = req.user
+	console.log(user)
+	if(user && user.verified==false)
+	{
+		res.redirect("/verify")
+	}else{
+		res.redirect("/back")
+	}
 	
 });
 
@@ -345,7 +350,7 @@ app.post("/showplay/:search/:ida/:idb", (req,res)=>{
 	 
 
 app.get("/playlist",isLoggedIn,function(req,res){
-		
+	console.log(req.user)
 	if(req.user && req.user.verified == false)
 	{   req.flash('verify', `An email has been sent to ${req.user.email} . Please verify your account.`);
         res.redirect("/verify")
@@ -390,11 +395,11 @@ app.get("/playlist/:id",function(req,res){
 		//	console.log(songs.playlist[0])
 			if(songs.playlist[0]){
 				console.log("yes");
-			res.render("song_view",{Playlist: songs,play:songs.playlist[0]["audio"],user:auser,successMessages:req.flash('success')});
+			res.render("song_view",{Playlist: songs,play:songs.playlist[0]["audio"],successMessages:req.flash('success')});
 			}
 			else{
 				console.log("no");
-				res.render("song_view",{Playlist: songs,play:null,user:auser,successMessages:req.flash('success') });
+				res.render("song_view",{Playlist: songs,play:null,successMessages:req.flash('success') });
 			}
 		}
 	});
@@ -414,7 +419,7 @@ app.get("/playsong/:ida/:idb",function(req,res){
 					foundPly.playlist.forEach(function(foundSong){
 					if(foundSong._id==idb){
 					  console.log(foundSong);
-					  return res.render("song_view",{Playlist: foundPly,play:foundSong["audio"]});
+					  return res.render("song_view",{Playlist: foundPly,play:foundSong["audio"],successMessages:req.flash('success')});
 					}
 
 			 });
@@ -488,8 +493,6 @@ app.post("/delete/:id",function(req,res){
 	res.redirect("/playlist");
 });
 
-
-
 app.get("/register", function(req, res){
 	res.render("signup", { alertMessages : req.flash('error') } )
 });
@@ -562,18 +565,24 @@ app.post("/register",async (req, res) =>{
 // show login form
 app.get("/login",registerLOG, function(req, res){
 
-   res.render("login",{successMessages:req.flash('success')}); 
+   res.render("login",{successMessages: req.flash('success'),alertMessages: req.flash('error')}); 
 });
 
 
 app.get('/verify',(req,res)=>{
 		 
-	   const errors = req.flash("error")
+	if(req.user && req.user.verified==false)
+	{ const errors = req.flash("error")
 	   console.log(32,errors)
-       res.render("verify", { alertMessages : errors , verifyMessages : req.flash("verify") } )
+	   res.render("verify", { alertMessages : errors , verifyMessages : req.flash("verify") } )
+    }else{
+		res.redirect('/')
+	}
 });
 
 app.post('/verify',async (req,res)=>{
+
+	
    const secretToken = req.body.SecretToken.trim();
    console.log(req.body)
    console.log("The inputted SecretToken is ",secretToken)
@@ -592,17 +601,15 @@ app.post('/verify',async (req,res)=>{
    console.log("User found") 
    user.verified = true;
    user.Token = 'The_Token_Has_Been_Verified';
-    user.save((err,user)=>{
-        console.log("User Changed",user);
-        req.flash('success','Your Verification is now Complete ! Now you can accesss the site :)')
-        res.redirect('/');
-   });
-
+   user.save();
+   console.log(12,user)
+   req.flash('success','Your Verification is now Complete ! Now you can accesss the site :)')
+   req.logout();
+   res.redirect('/login');
 }
  catch(e){
 	 console.log(e)
  }
-
 
 });
 
@@ -637,17 +644,22 @@ app.post("/login", passport.authenticate("local",
 	failureRedirect: "/login",
 	failureFlash: 'Invalid username or password.'
 }), function(req, res){	
-  console.log(res.flash('error'));
+	req.flash('success','You have Successfully signed In!!!')
   console.log("successfully signed In")
 });
 
 // logic route
 app.get("/logout", function(req, res){
    req.logout();
-   req.flash('success','You have successfully logged Out.')
+   console.log("you are logging out.")
+   req.flash('success','You have successfully logged Out!!')
    res.redirect("/login");
 });
 
+
+app.get('/about', (req,res)=>{
+	res.render('about');
+})
 function isLoggedIn(req, res, next){
 	console.log(req.isAuthenticated())
 	

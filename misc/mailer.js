@@ -17,7 +17,7 @@ module.exports = {
     return new Promise((resolve, reject) => {
       transport.sendMail({ from, subject, to, html }, (err, info) => {
         if (err) {
-            console.log(69,"Mail not sent")
+            console.log(404,"Mail not sent")
             reject(err);}
         resolve(info);
       });

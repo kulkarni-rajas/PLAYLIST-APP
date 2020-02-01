@@ -1,7 +1,143 @@
 <% include partials/header %>
 <link href="css/login.css" rel="stylesheet" type="text/css">
 
-<div class="container">
+<style>
+
+.sticky{
+	position: sticky;
+	top:0;
+	z-index: 12;
+}
+.currentSong{
+	
+	width:100%;
+	display:flex;
+	border-radius: 5px;
+
+}
+
+.image{
+   flex:1;
+   
+}
+
+.info{
+	flex:2;
+	margin:auto; //aligned in the center horixzontally and vertically
+}
+.btns{
+	flex:6;
+	display:flex;
+}
+.pause-play{
+	margin:auto;
+	flex:2;
+	cursor: pointer;
+}
+.next-song{
+	flex:2;
+	margin: auto;
+	cursor: pointer;
+}
+.previous-song{
+	flex: 2;
+	margin: auto;
+	cursor: pointer;
+}
+
+
+.seek-bar{
+	
+	position: relative;
+	width:75%;
+	left:90px;
+    height: 5px;
+    background-color:gray;
+    display: flex;
+    border-radius: 50px;
+    margin-left: 25px;
+    cursor: pointer;
+}
+
+.fill{
+    height: 5px;
+    background-color:green;
+    border-radius: 20px;
+}
+
+.handle{
+    width: 8px;
+    height: 8px;
+    background-color:green;
+    border-radius: 50%;
+    margin-left: -5px;
+    transform: scale(2);
+}
+
+.pause-play :hover{
+   color : rgb(80, 145, 80);
+}
+
+.next-song :hover{
+   color : rgb(80, 145, 80);
+}
+
+.previous-song :hover{
+   color : rgb(80, 145, 80);
+}
+
+.player-image{
+	height:100px;
+	position:relative;
+	right:9px;
+	border-width: 2px;
+	border-color: teal;
+	padding:2px;
+	margin-left:13px;
+	top:2px;
+}
+.song-title {
+	font-family: 'Play', sans-serif;
+}
+.PlaylistHeading{
+	font-family: 'Play', sans-serif;
+}
+</style>
+
+
+
+
+
+
+<% if (Playlist.playlist[0]){ %>
+<div class="alert-success sticky ">
+	<div class="currentSong ">
+     <div class="image">
+       <img src="<%=Playlist.playlist[0].image%>" class="player-image"/>
+	 </div>
+	 <div class="info">
+	 <div><h5 class="songTitle"><%=Playlist.playlist[0].name%></h5></div>
+	 <div class="songArtist"><%=Playlist.playlist[0].artist%></div>  
+	 <div class="SongDuration">---</div>
+	 </div>
+	 <span class="btns">
+		<div class="previous-song" onclick="pre()"><i class="fa fa-4x fa-fast-backward"></i></div>
+		 <div class="pause-play" onclick="playOrPauseSong()">
+			<i class="fa fa-5x fa-play-circle play-btn"></i>
+		</div>
+		 <div class="next-song" onclick="next()">
+			<i class="fa fa-4x fa-fast-forward"></i>
+		</div>
+	 </span>
+	</div>
+	<div class="seek-bar">
+		<div class="fill"></div>
+		<div class="handle"></div>
+	</div>
+</div>
+<%}%>
+
+<div class="container alert-delete" id="mydiv">
 	<% if(successMessages) {%>
 		<% successMessages.forEach((message)=>{ %>
 			  <div class="alert alert-success alert-dismissible alert-delete">
@@ -11,41 +147,197 @@
 		  <%})%>
 	<%}%>
 </div>	
+<br>
 
-
-<div class="container">
-	<div class="alert alert-success">
-		<form action="/back" method="POST">
-			<button class="btn btn-outline-success my-2 my-sm-0" role="button" >Search Again!</button>	
-		</form>
-	</div>
+<div class="container alert alert-success" style="text-align: center;">
+	<h2 class="PlaylistHeading">
+		
+		<%if(Playlist.name){%>
+		<u><b><i><%=Playlist.name[0].toUpperCase() +  
+		Playlist.name.slice(1); %></i></b></u>
+	   <%}%>
+	</h2>
 </div>
 
 
 <div class="container">
+	<div class="alert alert-success addButtons">
+		<form action="/back" method="POST">
+			<button class="btn btn-block btn-outline-success my-2 my-sm-0" role="button" >Search Again!</button>	
+		</form>
+		<% if (Playlist.playlist[0]){ %>
+			<button class="btn btn-outline-success btn-block" onClick="autoplayall()">Autoplay</button>
+		<%}%>
+	</div>
+	
+</div>
 
-	<h2><%=Playlist.name%></h2>
 
-	<audio src=<%= play%> controls autoplay>
-		Your browser does not support the audio element.
-	</audio>
+<div class="container" style="align-content: center;">
 
+   <br>
+
+	<br>
+    <%i=0%>
     <div class="row row-cols-1 row-cols-md-3">
 		<% Playlist.playlist.forEach(function(song) { %>
             <div class="col mb-4">
-                <div class="card-transparent h-100">
-                    <img src="<%=song["image"] %>" class="card-img-top" alt="...">
-                    <div class="card-body">
-						<h4 class="card-title"><strong><%= song["name"] %></strong></h4>
+                <div class="card-transparent h-100 take-audio" style="text-align: center;" data-audio="<%=song.audio%>">
+                    <img src= "<%=song["image"] %>" class="card-img-top" alt="Sorry ,Your internets too slow.:(">
+                    <div class="card-body take-title" data-title="<%=song["name"]%>">
+						<h4 class="song-title"><strong><%= song["name"] %></strong></h4>
 						<p class="card-text"><%=song["artist"]%></p>
-						<form action=/playsong/<%=Playlist._id %>/<%=song._id %> method="GET">
-							<input class="btn btn-outline-success my-2 my-sm-0" role="button" type="submit" value="play">
-						</form>
+						<button class="btn btn-block btn-outline-success my-2 my-sm-0" onClick="playingNow(<%=i%>)">Play</button>
+						<div class="take-artist " data-artist="<%=song.artist%>" data-number="<%=i%>"></div>
                     </div>
                 </div>
-            </div>
+			</div>
+			<%i++%>
         <% }) %>
     </div>
 </div>
+
+<script>
+	
+	setTimeout(function(){
+        $(".alert-delete").remove();
+    }, 4000 ); // 4 secs
+	 
+	 console.log("Welcome to the console!!")
+   //get the audio links
+	var audioLinks = [].map.call(
+      document.querySelectorAll(".take-audio"),
+      function (currentValue, index, collection) {
+		return currentValue.dataset.audio;
+	  })
+	  console.log(audioLinks)
+	
+	//get the images links
+	var imageUrls = [].map.call(
+      document.getElementsByTagName("img"),
+      function (currentValue, index, collection) {
+		if(index!==0)
+		 {return currentValue.getAttribute("src");}
+      })
+	imageUrls.shift()
+	console.log(imageUrls)
+	
+	//get the artist Name
+    var artistNames = [].map.call(
+      document.getElementsByClassName("take-artist"),
+      function (currentValue, index, collection) {
+		 return currentValue.dataset.artist;
+	  })
+	console.log(artistNames)
+	//get the song name
+	var songNames = [].map.call(
+      document.getElementsByClassName("take-title"),
+      function (currentValue, index, collection) {
+		 return currentValue.dataset.title;
+	  })
+	console.log(songNames)
+
+	var song = new Audio();
+        var currentSong = 0;    // it point to the current song
+	  
+	var songTitle = document.querySelector(".songTitle");
+	console.log(songTitle)
+	var songArtist = document.querySelector(".songArtist");
+	var SongDuration = document.querySelector(".SongDuration");
+	var fillBar = document.querySelector(".fill");
+	var lengthOfSongs = artistNames.length
+		
+	
+	     song.addEventListener('timeupdate',function(){ 
+            
+			var position = song.currentTime / song.duration;
+			SongDuration.innerHTML=  (song.currentTime/100).toFixed(2).toString() +"/"+(song.duration/100).toFixed(2).toString() ;
+            fillBar.style.width = position * 100 +'%';
+		});
+			
+		song.addEventListener('loadeddata',function(){ 
+            
+            SongDuration.innerHTML= (song.duration/100).toFixed(2) ;
+		});
+		
+
+        function playSong(){
+            console.log("Song is added")
+            song.src = audioLinks[currentSong];  //set the source of 0th song 
+            songTitle.innerHTML = songNames[currentSong]; // set the title of song
+			songArtist.innerHTML = artistNames[currentSong];
+			song.play();    // play the song
+			
+		}
+		
+        function playOrPauseSong(){
+			console.log('Clicked')
+            $(".pause-play").empty();
+            if(song.paused){
+				song.play();
+				$(".pause-play").append(`<i class="fa fa-5x fa-pause-circle pause-btn"></i>`);
+            }
+            else{
+				song.pause();
+                $(".pause-play").append(`<i class="fa fa-5x fa-play-circle play-btn"></i>`);
+            }
+        }
+    
+        function next(){
+            
+            currentSong++;
+            if(currentSong > lengthOfSongs-1){
+                currentSong = 0;
+            }
+            playSong();
+            $(".pause-play").empty();
+            $(".pause-play").append(`<i class="fa fa-5x fa-pause-circle pause-btn"></i>`);
+            $(".image img").attr("src",imageUrls[currentSong]);
+        }
+    
+        function pre(){
+            
+            currentSong--;
+            if(currentSong < 0){
+                currentSong = lengthOfSongs-1;
+            }
+			playSong();
+			$(".pause-play").empty();
+            $(".pause-play").append(`<i class="fa fa-5x fa-pause-circle pause-btn"></i>`);
+            $(".image img").attr("src",imageUrls[currentSong]);
+		}
+		
+		function playContinue(){
+				if(song.paused)
+				{song.play();}
+
+				next();
+		}
+
+	    function autoplayall(){
+		song.addEventListener('ended',playContinue)
+		$(".addButtons").empty();
+		$(".addButtons").append(`<form action="/back" method="POST">
+			<button class="btn btn-block btn-outline-success my-2 my-sm-0" role="button" >Search Again!</button>	
+		</form>`);
+		$(".addButtons").append(`<button class="btn btn-outline-danger btn-block" onClick="removeautoplayall()">RemoveAutoplay</button>`);
+
+	}
+	    function removeautoplayall(){
+			$(".addButtons").empty();
+		$(".addButtons").append(`<form action="/back" method="POST">
+			<button class="btn btn-block btn-outline-success my-2 my-sm-0" role="button" >Search Again!</button>	
+		</form>`);
+		$(".addButtons").append(`<button class="btn btn-outline-success btn-block" onClick="autoplayall()">Autoplay</button>`);
+		song.removeEventListener('ended',playContinue)
+	}
+
+	   function playingNow(number){
+		   console.log(number)
+		   currentSong = number;
+		   $(".image img").attr("src",imageUrls[currentSong]);
+		   playSong();
+	   }
+</script>
 
 <% include partials/footer %>

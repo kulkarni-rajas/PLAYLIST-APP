@@ -1,6 +1,11 @@
 <% include partials/header %>
 <link href="css/login.css" rel="stylesheet" type="text/css">
 
+<style>
+.title{
+	font-family: 'Play', sans-serif;
+}
+</style>
 <div class="container">
 	<% if(successMessages) {%>
 		<% successMessages.forEach((message)=>{ %>
@@ -13,11 +18,11 @@
 </div>	
 
 
-
 <div class="container">
 	<div class="alert alert-success">
-		<h1 id="n">Search for your song here</h1>
+		<u><i><b><h1 id="n" style="font-family: 'Play', sans-serif;text-align: center;">Search For Your Song</h1></b></i></u>
 	  </div>
+	  <br><br><br>
 	<div class="row">
 		<!-- <div class="col-md-3"></div> -->
 		<div class="form">  
@@ -34,7 +39,7 @@
 		</div>
 	</div>
 
-
+<br><br>
 <script>
 	function getdata(){
 		
@@ -55,6 +60,7 @@
 $.ajax(settings).done((response) =>{
 
 	const data = response.data;
+	console.log(12,data)
 	var search1=document.getElementById("mytext").value;
 	function renderTracks() {
 return `
@@ -64,10 +70,10 @@ ${data.map(song =>
 	<div class="card-transparent text-center">
 	 		<img src = "${song.album.cover_medium}" class="card-img-top" alt="...">
 			      <div class="card-body">
-			            <h4 class="card-title title"><strong>${song.title}</strong></h4>
+			            <h4 class="card-title title""><strong>${song.title}</strong></h4>
 			            <p class="card-text text">${song.artist.name}</p>
 					<form action="/addplaylist/${search1}/${song.id}/" method="GET">
-                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">ADD to playlist</button>
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">ADD to Playlist</button>
 				  </form>
 				</div>
 		</div>	
@@ -95,5 +101,4 @@ let cards = `${renderTracks()}`;
 	}
 	</script> 
 
- 
 <% include partials/footer %>

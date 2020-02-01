@@ -4,7 +4,7 @@
 <div class="container">
 	<div class="alert alert-success">
 		<form action="/back" method="POST">
-			<button class="btn btn-outline-success my-2 my-sm-0" role="button" >Search Again!</button>	
+			<button class="btn btn-block btn-outline-success my-2 my-sm-0" role="button" >Search Again!</button>	
 		</form>
 	</div>
 </div>
@@ -16,14 +16,19 @@
             <div class="col mb-4">
                 <div class="card-transparent h-100">
                     <div class="card-body">
-						<h4 class="card-title"><strong><%= playlist["name"] %></strong></h4>
+						<h4 class="card-title" style="text-align: center;" >
+							
+							<%if(playlist.name[0]){%>
+							<strong><%=playlist.name[0].toUpperCase() +  
+							playlist.name.slice(1); %></strong>
+						    <%}%>
+						</h4>
 						<!-- <p class="card-text"><strong>CREATED BY-</strong><%=playlist["author"]%></p> -->
 						<form action="/playlist/<%=playlist._id %>" method="GET">
-							<input class="btn btn-outline-success my-2 my-sm-0" role="button" type="submit" value="List">
+							<input class="btn btn-block btn-outline-success my-2 my-sm-0" role="button" type="submit" value="List">
 						</form>
-						<br>
 						<form action="/playlist/<%=playlist._id %>?_method=DELETE" method="POST">
-							<input class="btn btn-outline-danger" role="button" type="submit" value="DELETE">
+							<input class="btn btn-block btn-outline-danger" role="button" type="submit" value="Delete">
 						</form>
 					   
                     </div>
@@ -34,4 +39,7 @@
     </div>
 </div>
 
+<br><br>
+<br><br>
+<br><br>
 <% include partials/footer %>

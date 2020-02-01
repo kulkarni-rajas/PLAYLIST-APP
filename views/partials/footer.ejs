@@ -1,5 +1,108 @@
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-    </body>
+   
+
+<!-- Footer -->
+<footer class="page-footer font-small stylish-color-dark pt-4" style="background-color:#37474F;" >
+
+    <!-- Footer Links -->
+    <div class="container text-center text-md-left">
+  
+      <!-- Grid row -->
+      <div class="row">
+  
+        <!-- Grid column -->
+        <div class="col-md-4 mx-auto">
+  
+          <!-- Content -->
+          <h5 class="font-weight-bold text-uppercase mt-3 mb-4" style="color: white;">ABOUT</h5>
+          <p style="color: white;">Playpal, is an excellent website to store your songs with your own playlists which also has access to more than 30 million songs.As always keep tuning in for more music.:)</p>
+  
+        </div>
+
+        <!-- Grid column -->
+        <div class="col-md-2 mx-auto">
+  
+          <!-- Links -->
+          <h5 class="font-weight-bold text-uppercase mt-3 mb-4" style="color: white;">Links</h5>
+  
+          <ul class="list-unstyled">
+            <li>
+              <a href="/about">About</a>
+            </li>
+          </ul>
+  
+        </div>
+        <!-- Grid column -->
+  
+      </div>
+      <!-- Grid row -->
+  
+    </div>
+    <!-- Footer Links -->
+  
+    <hr>
+  
+    <!-- Call to action -->
+    <ul class="list-unstyled list-inline text-center py-2">
+      <% if(!currentUser){ %>
+        <li class="list-inline-item">
+            <h5 class="mb-1" style="color: white;">Register for free</h5>
+         </li>
+       <li class="list-inline-item">
+           <a href="/register" class="btn btn-danger" style="border-radius:29px; padding: 10px 22px;">Sign up!</a>
+       </li>
+        <% } else if(currentUser.google) { %>
+            <li class="list-inline-item">
+                <h5 class="mb-1" style="color: white;"> Welcome Back ,<b><%= currentUser.google.name %>!!</b></h5>
+              </li>
+      <% } else { %>
+        
+            <li class="list-inline-item">
+                <h5 class="mb-1" style="color: white;">Welcome Back ,<b><%= currentUser.username %>!!</b></h5>
+              </li>
+        <% } %>
+    </ul>
+    <!-- Call to action -->
+  
+    <hr>
+
+    <!-- Social buttons -->
+    <ul class="list-unstyled list-inline text-center">
+      <li class="list-inline-item">
+        <a href="https://www.facebook.com/nitdgplug/" class="btn btn-floating" style="background-color: #3B5998; border-radius:100% ;">
+          <i class="fa fa-2x fa-facebook-f white-text"> </i>
+        </a>
+      </li>
+      <li class="list-inline-item">
+        <a href="https://twitter.com/nitdgpglug" class="btn btn-floating" style="background-color: #55ACEE; border-radius:100% ;">
+          <i class="fa fa-2x fa-twitter"> </i>
+        </a>
+      </li>
+      <li class="list-inline-item">
+        <a href="https://www.google.com/search?q=glug+nitdgp&oq=glug&aqs=chrome.0.69i59j69i57j69i59l2j69i60l3j69i61.517j0j4&sourceid=chrome&ie=UTF-8" class="btn btn-floating" style="background-color: #DD4B39; border-radius:100% ;">
+          <i class="fa fa-2x fa-google"> </i>
+        </a>
+      </li>
+      <li class="list-inline-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fnitdgplug.org%2Fblog%2Fsummer-project-3%3Fid%3D11&title=Summer%20Project%203&summary=" class="btn btn-floating btn-li mx-1" style="background-color: #007BB6; border-radius:100% ;">
+          <i class="fa fa-2x fa-linkedin"> </i>
+        </a>
+      </li>
+    </ul>
+    <!-- Social buttons -->
+  
+    <!-- Copyright -->
+    <div class="footer-copyright text-center py-3" style="background-color: #263238 ; color: grey;">© 2020 Copyright:
+      <a href="#" style="color: white;"> Playpal </a>
+    </div>
+    <!-- Copyright -->
+  
+  </footer>
+  <!-- Footer -->
+
+</body>
+
 </html>

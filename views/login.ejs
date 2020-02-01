@@ -1,9 +1,30 @@
 <% include ./partials/header %> 
 <link href="css/login.css" rel="stylesheet" type="text/css">
 
+
+<div class="container">
+  
+  <%if(alertMessages){%>
+    <% alertMessages.forEach((message)=>{ %>
+          <div class="alert alert-danger alert-dismissible alert-delete">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <p style="text-align: center;"><strong>Error:</strong> <%= message %></p>
+          </div>
+      <%})%>
+  <%}%>
+  <% if(successMessages) {%>
+		<% successMessages.forEach((message)=>{ %>
+			  <div class="alert alert-success alert-dismissible alert-delete">
+				<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+				<p style="text-align: center;"><strong>Success:</strong> <%= message %></p>
+			  </div>
+		  <%})%>
+	<%}%>
+  </div>
+  
 <div class="container">
   <div class="alert alert-success">
-    <h1 id="n">Login!</h1>
+    <h1 id="n" style="text-align: center;">Login!</h1>
   </div>
 
 <div class="login-page">
@@ -15,13 +36,11 @@
       </form>
       <p>
       </p>
-      <p>
-        Dont have an Account?
-        <br>
-        <a class="btn btn-outline-success my-2 my-sm-0" role="button" href="/register">SIGNUP</a>
-        <br>
-        <a class="btn btn-success" role="button" href="/auth/google">Google Sign In</a>
-    </p>
+      <p> Dont have an Account?  </p>
+       
+        <a class="btn btn-block btn-outline-success my-2 my-sm-0" role="button" href="/register">SIGNUP</a>
+        
+        <a class="btn btn-block btn-danger" role="button" href="/auth/google"> <i class="fa fa-google">  Sign In With Google </i></a>
     </div>
   </div>
 </div>
