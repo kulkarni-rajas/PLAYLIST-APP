@@ -1,5 +1,14 @@
 <% include ./partials/header %> 
 <link href="css/login.css" rel="stylesheet" type="text/css">
+<style>
+  #p01 {
+    background-color: red;
+    padding: 10px;
+    display: none;
+    text-align: center;
+    color: seashell;
+  }
+  </style>
 
 <div class="container">
   <div class="alert alert-success">
@@ -11,6 +20,9 @@
             <input type="text" name="username" placeholder="username">
             <input type="password" name="password" placeholder="password">
             <button class="btn btn-outline-success my-2 my-sm-0">Sign Up</button>
+            <br>
+            <br>
+            <div id = "p01" data-checker="<%=message%>">This username has already been taken!</div>
         </form>
       <p>
           
@@ -23,4 +35,13 @@
     </div>
   </div>
 </div>
+
+<script>
+var div1 = document.getElementById('p01');
+var a =div1.dataset.checker;
+if(a.localeCompare("show")===0){
+  div1.style.display= 'block';
+}
+
+</script>
 <% include ./partials/footer %> 

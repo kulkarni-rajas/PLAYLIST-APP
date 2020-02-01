@@ -408,7 +408,7 @@ app.post("/delete/:id",function(req,res){
 
 
 app.get("/register", function(req, res){
-   res.render("signup"); 
+   res.render("signup", {message: "none"}); 
 });
 //handle sign up logic
 app.post("/register", function(req, res){
@@ -418,7 +418,7 @@ app.post("/register", function(req, res){
         if(err){
             console.log(err);
             //return res.render("signup");
-			res.send("username already taken");
+			res.render("signup", {message : "show"});
         }
          passport.authenticate("local")(req, res, function(){
 		//	 res.send("successfully registered");
