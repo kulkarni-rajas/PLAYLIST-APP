@@ -3,8 +3,6 @@
 ![](https://github.com/lugnitdgp/PlayPal/blob/master/public/Demo.gif)
 [![forthebadge](https://forthebadge.com/images/badges/made-with-javascript.svg)](https://forthebadge.com)
 <br>
-[![Join the chat at https://gitter.im/NIT-dgp/General](https://badges.gitter.im/NIT-dgp/General.svg)](https://gitter.im/NIT-dgp/General?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 [![GSoC Heat 2021](https://img.shields.io/badge/GSOC%20HEAT-2021-orange)](https://nitdgpos.github.io/gsoc_heat)
 <br>
 [![forthebadge](https://forthebadge.com/images/badges/uses-html.svg)](https://forthebadge.com)
