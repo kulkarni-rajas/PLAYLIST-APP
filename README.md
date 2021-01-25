@@ -39,7 +39,7 @@ mkdir project
 cd project
 
 #Clone the Repository
-git clone https://github.com/v-rohan/PlayPal.git
+git clone https://github.com/lugnitdgp/PlayPal.git
 
 #Change directory
 cd PlayPal
