@@ -9,7 +9,7 @@ contribution should be followed if you want to submit a pull request.
 ## How to prepare
 
 * You need a [GitHub account](https://github.com/signup/free).
-* Submit an [issue ticket](https://github.com/harshith331/PLAYLIST-APP/issues) here,
+* Submit an [issue ticket](https://github.com/lugnitdgp/PlayPal/issues) here,
   for your issue if there is no one yet.
   * Describe the issue, if it's a Bug or Feature/Improvement.
   * If it's bug provide details steps to reproduce it.
