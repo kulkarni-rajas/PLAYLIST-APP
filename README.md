@@ -31,26 +31,39 @@ Kindly follow [contributing.md](contributing.md), if you want to lend a hand in 
 * Mongodb
   - The database used in the app is MongoDB, so it must be configured on you local machine. Follow the [guide](https://docs.mongodb.com/manual/administration/install-on-linux/) if you dont have MongoDB installed
 
+
+
+1. Make Directory 
 ```bash
-
-
-#Make Directory 
 mkdir project
 cd project
+```
 
-#Clone the Repository
+2. Clone the Repository
+```bash
+
 git clone https://github.com/lugnitdgp/PlayPal.git
-
-#Change directory
+```
+3. Change directory
+```bash
 cd PlayPal
+```
 
-#Start MongoDB
+4. Start MongoDB
+```bash
 sudo service mongod start
-#Check Status
+```
+5. Check Status
+```bash
 sudo service mongod status
+```
 
-#Launch App by
+6. Launch App by
+```bash
 node app.js
+```
 
-#App hosted at 
+App hosted at 
+```bash
 http://localhost:3000/
+```
