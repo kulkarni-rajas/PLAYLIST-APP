@@ -356,19 +356,24 @@ app.get("/register", function(req, res){
 //handle sign up logic
 app.post("/register", function(req, res){
 	console.log(4,req.body)
-	const{password,confirmPassword}=req.body
+	const{username,password,confirmPassword}=req.body
+	
+	if(!username || !password || !confirmPassword) {
+		res.redirect('/register') 
+	}
+
 	
 	if(password===confirmPassword)
 	{
     var newUser = new User({username: req.body.username});
     User.register(newUser, req.body.password, function(err, user){
-        if(err){
-            console.log(err);
+     //   if(err){
+       //     console.log(err);
             //return res.render("signup");
-			res.send("username already taken");
-        }
+			//res.send("username already taken");
+        //}
          passport.authenticate("local")(req, res, function(){
-		//	 res.send("successfully registered");
+		    // res.send("successfully registered");
               res.redirect("/"); 
         });
 	});
