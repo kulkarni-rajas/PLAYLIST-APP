@@ -92,7 +92,7 @@ app.get("/", function(req, res){
 
 });
 
-app.post("/list",function(req,res){
+app.post("/list", async function(req,res){
 	song=req.body.Search;
 	//song="light it up";
 	console.log(2,req.body)
@@ -107,17 +107,21 @@ app.post("/list",function(req,res){
 			"x-rapidapi-key": "45eff3d17amsha881e5fec2254d6p1b4718jsn949ef4e06f56"
 		});
 		
-	    reqd.end(function (resd) {
-			 if (resd.error) 
-			 {throw new Error(resd.error);}
+	    await reqd.end(async function (resd) {
+			 if (resd.body.error) 
+			 {
+				 console.log(resd.body.error.message);
+				 res.render("landing",{message: resd.body.error.message});
+			 }
+			 else{
 				result= resd.body;
 				//console.log(result["data"][0]);
 				console.log(3,result)
 				const data = result["data"]
 				
-				data.forEach(function(song){
+				await data.forEach(async function(song){
 					
-					Song.create({
+					await Song.create({
 						   name:   song["title"],
 						   artist: song["artist"]["name"],
 					       audio:  song["preview"],
@@ -126,14 +130,13 @@ app.post("/list",function(req,res){
 							if(err){
 								console.log(err);
 							} else {
-								
 								//console.log(asong);
 							}
 						});
-					
 				})
+				res.redirect("/list_view");
+			 }
 			});
-	            res.redirect("/list_view");
 });
 
 app.get("/list_view",function(req,res){
@@ -283,6 +286,44 @@ app.get("/playsong/:ida/:idb",function(req,res){
 	});
 });
 
+// app.get("/deletesong/:ida/:idb",function(req,res){
+// 		PlaylistSC.findById(req.params.ida,function(err,foundPly){
+// 		if(err){
+// 			console.log(err);
+// 		}
+// 		else{
+// 			console.log(foundPly);
+// 			var foundlist=foundPly["playlist"];
+// 			foundPly.playlist.findByIdAndRemove(req.params.idb,function(error){
+// 				if(error){
+// 					console.log(error);
+// 				}
+// 				else{
+// 					res.redirect("/playlist/"+req.params.ida);
+// 				}
+// 			});
+// 		}
+// 	});
+// });
+
+
+app.get("/deletesong/:ida/:idb",function(req,res){
+	var newList = []
+	PlaylistSC.findById(req.params.ida,function(err,foundPly){
+	if(err){
+		console.log(err);
+	}
+	else{
+		foundPly.playlist.forEach((song) => {
+			if(song.id != req.params.idb)
+			newList.push(song)
+		});
+		var update = foundPly;
+		update.playlist= newList;
+		PlaylistSC.findByIdAndUpdate(req.params.ida, update).then(res.redirect("/playlist/"+req.params.ida));
+	}
+})
+});
 
 	
 // app.get("/playlistCV",function(req,res){
@@ -330,7 +371,7 @@ app.delete("/playlist/:id",function(req,res){
 // });
 
 app.get("/back",(req,res)=>{
-	res.render("landing");
+	res.render("landing",{message: null});
 })
 
 app.post("/back",function(req,res){
