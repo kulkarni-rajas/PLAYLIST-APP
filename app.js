@@ -286,6 +286,44 @@ app.get("/playsong/:ida/:idb",function(req,res){
 	});
 });
 
+// app.get("/deletesong/:ida/:idb",function(req,res){
+// 		PlaylistSC.findById(req.params.ida,function(err,foundPly){
+// 		if(err){
+// 			console.log(err);
+// 		}
+// 		else{
+// 			console.log(foundPly);
+// 			var foundlist=foundPly["playlist"];
+// 			foundPly.playlist.findByIdAndRemove(req.params.idb,function(error){
+// 				if(error){
+// 					console.log(error);
+// 				}
+// 				else{
+// 					res.redirect("/playlist/"+req.params.ida);
+// 				}
+// 			});
+// 		}
+// 	});
+// });
+
+
+app.get("/deletesong/:ida/:idb",function(req,res){
+	var newList = []
+	PlaylistSC.findById(req.params.ida,function(err,foundPly){
+	if(err){
+		console.log(err);
+	}
+	else{
+		foundPly.playlist.forEach((song) => {
+			if(song.id != req.params.idb)
+			newList.push(song)
+		});
+		var update = foundPly;
+		update.playlist= newList;
+		PlaylistSC.findByIdAndUpdate(req.params.ida, update).then(res.redirect("/playlist/"+req.params.ida));
+	}
+})
+});
 
 	
 // app.get("/playlistCV",function(req,res){
