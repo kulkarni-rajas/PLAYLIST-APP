@@ -1,26 +1,29 @@
-<% include ./partials/header %> 
-<link href="css/login.css" rel="stylesheet" type="text/css">
+<% include ./partials/header %>
+    <link href="css/login.css" rel="stylesheet" type="text/css">
 
-<div class="container">
-  <div class="alert alert-success">
-    <h1 id="n">Login!</h1>
-  </div>
+    <div class="container">
+        <div class="alert alert-success">
+            <center>
+                <h1 id="n">Login!</h1>
+            </center>
+        </div>
 
-<div class="login-page">
-    <div class="form">
-      <form action="/login" method="POST">
-        <input type="text" name="username" placeholder="username">
-        <input type="password" name="password" placeholder="password">
-        <input class="btn btn-outline-success my-2 my-sm-0" role="button" type="submit" value="Login!">
-      </form>
-      <p>
-      </p>
-      <p>
-        Dont have an Account?
-        <a class="btn btn-outline-success my-2 my-sm-0" role="button" href="/register">SIGNUP</a>
-    </p>
+        <div class="login-page">
+            <br><br><br><br>
+            <div class="form">
+                <form action="/login" method="POST">
+                    <input type="text" name="username" placeholder="username">
+                    <input type="password" name="password" placeholder="password">
+                    <input class="btn btn-outline-success my-2 my-sm-0" style="color: rgb(39, 38, 37); background-color: rgb(137, 178, 206);" role="button" type="submit" value="Login!">
+                </form>
+                <p>
+                </p>
+                <p>
+                    Dont have an Account?
+                    <a class="btn btn-outline-success my-2 my-sm-0" role="button" href="/register">Sign Up</a>
+                </p>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
 
-<% include ./partials/footer %> 
+    <% include ./partials/footer %>
